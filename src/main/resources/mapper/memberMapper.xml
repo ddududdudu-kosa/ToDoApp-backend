@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.todo.member.dao.MemberMapper">
+	<insert id="insertMember">
+		INSERT INTO TEST_MEMBER
+		(
+			ID,
+			ROLE,
+			RATING,
+			PRIVACY,
+			EMAIL,
+			NICKNAME,
+			PASSWORD,
+			INTRO,
+			PROFILEIMG,
+			STATUS,
+			CREATEAT,
+			UPDATEAT
+		)
+		VALUES
+		(
+			TEST_MEMBER_SEQ.NEXTVAL,
+			#{MEMBER.ROLE},
+			#{MEMBER.RATING},
+			#{MEMBER.PRIVACY},
+			#{MEMBER.EMAIL},
+			#{MEMBER.NICKNAME},
+			#{MEMBER.PASSWORD},
+			#{MEMBER.INTRO},
+			#{MEMBER.PROFILEIMG},
+			#{MEMBER.STATUS},
+			SYSDATE,
+			NULL
+		)
+	</insert>
+	
+	<select id="findByEmail" resultType="int">
+		SELECT 
+			COUNT(*)
+		FROM TEST_MEMBER
+		WHERE EMAIL = #{email}
+	</select>
+	
+	<select id="findAccount" resultType="com.todo.config.security.CustomUserDetail">
+		SELECT
+			EMAIL AS "email",
+			PASSWORD AS "password",
+			ROLE AS "role"
+		FROM TEST_MEMBER
+		WHERE EMAIL = #{email}
+	</select>
+</mapper>
