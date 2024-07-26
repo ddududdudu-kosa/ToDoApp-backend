@@ -48,9 +48,12 @@ dependencies {
 	
 	// 오라클 클라우드
 	runtimeOnly 'com.oracle.database.jdbc:ojdbc8'
-	implementation 'com.oracle.database.security:oraclepki'
-	implementation 'com.oracle.database.security:osdt_cert'
-	implementation 'com.oracle.database.security:osdt_core'
+	//implementation 'com.oracle.database.security:oraclepki'
+	//implementation 'com.oracle.database.security:osdt_cert'
+	//implementation 'com.oracle.database.security:osdt_core'
+	
+	// 개인적으로 local db에서 테스트할 때 사용
+	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
 	
 	//JSON의 자바 오브젝트변환 라이브러리 의존성
     implementation 'com.google.code.gson:gson:2.8.9'
