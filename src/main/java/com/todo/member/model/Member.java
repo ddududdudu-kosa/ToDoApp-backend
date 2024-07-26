@@ -33,6 +33,9 @@ public class Member {
 	private Date updateat;
 	
 	public Member (MemberRequest memberRequest) {
+		if (memberRequest.getProfileImg() == null || memberRequest.getProfileImg().equals(""))
+			memberRequest.setProfileImg("https://ddudu.s3.ap-northeast-2.amazonaws.com/member/default.png");
+		
 		this.privacy = memberRequest.getPrivacy();
 		this.email = memberRequest.getEmail();
 		this.nickname = memberRequest.getNickname();
