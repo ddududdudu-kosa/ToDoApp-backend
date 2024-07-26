@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.todo.todos.mapper.TodosMapper">
+	<!-- Select todo by id -->
+    <select id="selectTodoById" resultType="com.todo.todos.domain.Todo">
+        SELECT * FROM todos WHERE id = #{id}
+    </select>
+
+    <!-- Select all todos -->
+    <select id="selectAllTodos" resultType="com.todo.todos.domain.Todo">
+        SELECT * FROM todos
+    </select>
+
+    <!-- Insert todo -->
+    <insert id="insertTodo" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO todos ("order", contents, "date", status, start_date, end_date, mon, tue, wen, thu, fri, sat, sun, createat)
+        VALUES (#{order}, #{contents}, #{date}, #{status}, #{startDate}, #{endDate}, #{mon}, #{tue}, #{wen}, #{thu}, #{fri}, #{sat}, #{sun}, CURRENT_DATE)
+    </insert>
+
+    <!-- Update todo -->
+    <update id="updateTodo">
+        UPDATE todos SET "order" = #{order}, contents = #{contents}, "date" = #{date}, status = #{status},
+        start_date = #{startDate}, end_date = #{endDate}, mon = #{mon}, tue = #{tue}, wen = #{wen},
+        thu = #{thu}, fri = #{fri}, sat = #{sat}, sun = #{sun}, updateat = CURRENT_DATE WHERE id = #{id}
+    </update>
+
+    <!-- Delete specific todo -->
+    <delete id="deleteSpecificTodo">
+        DELETE FROM todos WHERE id = #{id} AND "order" = #{order} AND categories_id = #{categoriesId} AND "date" = #{date}
+    </delete>
+</mapper>

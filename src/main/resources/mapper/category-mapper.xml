@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.todo.categorys.mapper.CategoryMapper">
+	<!-- 카테고리 등록 -->
+	<insert id="insertCategory" parameterType="com.todo.categorys.domain.Category" useGeneratedKeys="true">
+        INSERT INTO categories(
+						contents, 
+						"order", 
+						color, 
+						createat, 
+						member_id)
+        		VALUES (
+        				#{contents}, 
+        				#{order}, 
+        				#{color}, 
+        				SYSDATE, 
+        				#{memberId})
+	</insert>
+	
+	<!-- id별 카테고리 조회 -->
+	<select id="selectCategoriesByMemberId" resultType="com.todo.categorys.domain.Category">
+        SELECT * FROM categories 
+        	WHERE member_id = #{memberId}
+        	ORDER BY "order"
+    </select>
+    
+    <!-- 카테고리 삭제 -->
+    <delete id="deleteCategory" parameterType="long">
+    	DELETE FROM categories 
+    		WHERE id = #{id}
+	</delete>
+    
+    <!-- 카테고리 변경 -->
+    <update id="updateCategory" parameterType="com.todo.categorys.domain.Category">
+    	UPDATE categories
+    		SET contents = #{contents}, 
+    			color = #{color}, 
+    			updateat = SYSDATE
+        	WHERE id = #{id}
+    </update>
+    
+    <!--  멤버별 카테고리 순서 체크 -->
+    <select id="findMaxOrder" parameterType="long" resultType="long">
+    	SELECT COALESCE(MAX("order"), 0) AS maxOrder 
+    		FROM categories 
+    		WHERE member_id = #{memberId}
+	</select>
+	
+	<!-- 카테고리 삭제시 순서 재정렬 -->
+	<update id="updateOrderOnDelete">
+    	UPDATE categories 
+    		SET "order" = "order" - 1 
+    		WHERE member_id = #{memberId} 
+    			AND "order" > #{order}
+	</update>
+	
+	<select id="findByCategoryId" parameterType="long" resultType="com.todo.categorys.domain.Category">
+	    SELECT id, contents, "order", color, createat, updateat, member_id
+	    	FROM categories
+	    	WHERE id = #{id}
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
