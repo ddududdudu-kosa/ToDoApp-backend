@@ -1,44 +1,33 @@
 package com.todo.member.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import java.io.IOException;
 
-import com.todo.member.model.Member;
-import com.todo.member.model.MemberRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.todo.member.model.JoinDTO;
 import com.todo.member.service.MemberService;
 
-/**
-* @packageName    : com.todo.member.controller
-* @fileName        : MemberController.java
-* @author        : leejongseop
-* @date            : 2024.07.23
-* @description            :
-* ===========================================================
-* DATE              AUTHOR             NOTE
-* -----------------------------------------------------------
-* 2024.07.23        leejongseop       최초 생성
-*/
-
 @RestController
-@RequestMapping("user")
 public class MemberController {
 
 	@Autowired
-	private MemberService memberService;
+	MemberService memberService;
 	
-	
-	@PostMapping("/join")
-	public void insertMember(@RequestBody MemberRequest memberRequest) {
-		memberService.insertMember(new Member(memberRequest));
+	// 회원가입
+	@PostMapping("join")
+	public ResponseEntity<?> userJoin(@RequestPart("JoinDTO") JoinDTO joinDTO, @RequestPart("profile") MultipartFile file) throws IOException{
+		memberService.insertMember(file, joinDTO);
+		return ResponseEntity.status(HttpStatus.OK)
+				.header("Content-Type", "text/plain; charset=UTF-8")
+				.body("회원가입 완료");
 	}
 	
-	@GetMapping("/emailConfirm")
-	public ResponseEntity<?> findByEmail(@RequestBody String email) {
-		return ResponseEntity.ok(memberService.findByEmail(email));
-	}
+	
 }

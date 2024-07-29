@@ -1,23 +1,17 @@
 package com.todo.member.service;
 
-import com.todo.member.model.Member;
+import java.io.IOException;
 
-/**
-* @packageName    : com.todo.member.service
-* @fileName        : MemberService.java
-* @author        : leejongseop
-* @date            : 2024.07.23
-* @description            :
-* ===========================================================
-* DATE              AUTHOR             NOTE
-* -----------------------------------------------------------
-* 2024.07.23        leejongseop       최초 생성
-*/
+import org.springframework.web.multipart.MultipartFile;
+
+import com.todo.member.model.JoinDTO;
+import com.todo.member.model.MemberDTO;
+
 public interface MemberService {
 
 	// 회원가입
-	void insertMember(Member member);
+	void insertMember(MultipartFile file, JoinDTO joinDTO) throws IOException ;
 	
-	// 이메일 중복 여부 체크용
-	int findByEmail(String email);
+	// 이메일로 계정정보 가져오기
+	MemberDTO findByEmail(String email);
 }

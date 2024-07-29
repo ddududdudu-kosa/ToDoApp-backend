@@ -1,6 +1,8 @@
 package com.todo.config.mail;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +16,15 @@ import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMessage.RecipientType;
 
 @Service
-public class MailService {
+public class EmailService {
 
 	@Autowired
 	private JavaMailSender emailSender;
 	
 	private String ePw; // 인증번호
-
+	
+	public static Map<String, String> codeStorage = new HashMap<>(); // 인증 코드 보관
+	
 	// 메일 내용 작성
 	private MimeMessage createMessage(String to) throws MessagingException, UnsupportedEncodingException {
 //			System.out.println("보내는 대상 : " + to);
@@ -96,8 +100,20 @@ public class MailService {
 			es.printStackTrace();
 			throw new IllegalArgumentException();
 		}
-
+		
+		// 인증코드 보관
+		codeStorage.put(to, ePw);
+		
 		return ePw; // 메일로 보냈던 인증 코드를 서버로 반환
 	}
-
+	
+	// 인증코드 확인
+	public boolean emailCodeConfirm(String email, String code) {
+		if(code.equals(codeStorage.get(email))){
+			// 코드 인증
+			return true;
+		}
+		return false;
+		
+	}
 }
