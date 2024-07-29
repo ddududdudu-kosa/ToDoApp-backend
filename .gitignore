@@ -40,6 +40,7 @@ out/
 application-db.properties
 application-file.properties
 application-mail.properties
+application-jwt.properties
 
 # wallet
 Wallet_todoapp/
