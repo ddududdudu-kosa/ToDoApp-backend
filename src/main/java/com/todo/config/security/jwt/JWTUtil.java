@@ -36,14 +36,15 @@ public class JWTUtil {
     
 
     // 토큰 생성 메소드
-    public String createJwt(String username, String role, Long expiredMs) {
+    public String createJwt(String username,   String role, Long expiredMs) {
 
-        return Jwts.builder()
-                .claim("username", username) // payload에 들어갈 username
+        return Jwts.builder() 
+                .claim("username", username) // payload에 들어갈 username 
                 .claim("role", role) // payload에 들어갈 role
                 .issuedAt(new Date(System.currentTimeMillis())) // 토큰 발행 시간
                 .expiration(new Date(System.currentTimeMillis() + expiredMs)) // 토큰 만료 시간
                 .signWith(secretKey) // 토큰 암호화
                 .compact(); // 토큰 생성
+        
     }
 }

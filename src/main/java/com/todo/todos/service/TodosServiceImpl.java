@@ -2,16 +2,14 @@ package com.todo.todos.service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import com.todo.todos.domain.CheckedTodoDTO;
 import com.todo.todos.domain.Todo;
 import com.todo.todos.mapper.TodosMapper;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
 @Service
 @AllArgsConstructor
@@ -59,4 +57,10 @@ public class TodosServiceImpl implements TodosService {
 	public List<Todo> findTodosByUserIdAndDate(Long memberId, Date date) {
 		return todoMapper.findTodosByUserIdAndDate(memberId, date);
 	}
+	
+	@Override
+    public List<CheckedTodoDTO> getCheckedTodos(int page, int size) {
+        return todoMapper.findRecentCompletedTodos(page, size);
+    }
+	  
 }
