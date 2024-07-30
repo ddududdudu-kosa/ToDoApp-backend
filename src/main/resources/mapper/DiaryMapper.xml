@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.todo.diaries.mapper.DiaryMapper">
+
+    <resultMap id="DiaryResultMap" type="com.todo.diaries.domain.dto.DiaryDTO">
+        <id column="id" property="id" />
+        <result column="title" property="title" />
+        <result column="contents" property="contents" />
+        <result column="d_date" property="dDate" />
+        <result column="temperature" property="temperature" />
+        <result column="diaryimg" property="diaryimg" />
+        <result column="status" property="status" />
+        <result column="createat" property="createat" />
+        <result column="updateat" property="updateat" />
+        <result column="emoji" property="emoji" />
+        <result column="member_id" property="memberId" />
+    </resultMap>
+
+    <select id="getAllDiaries" resultMap="DiaryResultMap">
+        SELECT * FROM diaries
+    </select>
+
+    <select id="getDiaryById" parameterType="Long" resultMap="DiaryResultMap">
+	SELECT * FROM diaries WHERE id = #{id}
+    </select>
+
+	<insert id="createDiary" parameterType="com.todo.diaries.domain.dto.DiaryDTO">
+        INSERT INTO diaries (title, contents, d_date, temperature, diaryimg, status,
+        createat, emoji, member_id)
+        VALUES (#{title}, #{contents}, #{dDate}, #{temperature}, #{diaryimg},
+        #{status}, #{createat}, #{emoji}, #{memberId})
+    </insert>
+    
+    <update id="updateDiary" parameterType="com.todo.diaries.domain.dto.DiaryDTO">
+        UPDATE diaries
+        SET title = #{title},
+            contents = #{contents},
+            d_date = #{dDate},
+            temperature = #{temperature},
+            diaryimg = #{diaryimg},
+            status = #{status},
+            updateat = #{updateat},
+            emoji = #{emoji}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteDiary" parameterType="Long">
+        DELETE FROM diaries WHERE id = #{id}
+    </delete>
+</mapper>

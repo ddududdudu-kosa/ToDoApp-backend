@@ -49,7 +49,7 @@ public class SecurityConfig {
                         .requestMatchers("/feed/**").authenticated()
                         .requestMatchers("/mypage/**").authenticated()
                         .requestMatchers("/feed/**").authenticated()
-                        .requestMatchers("/diary/**").authenticated()
+                        .requestMatchers("/diary/**").permitAll() //  임시 허용
                         .requestMatchers("/like/**").authenticated()
                         .requestMatchers("/notice/**").authenticated()
                         .requestMatchers("/admin/**").authenticated()
