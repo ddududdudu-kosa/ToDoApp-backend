@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +21,9 @@ import com.todo.categorys.domain.Category;
 import com.todo.categorys.domain.RequestCategoryDTO;
 import com.todo.categorys.domain.ResponseCategoryDTO;
 import com.todo.categorys.service.CategoryService;
+import com.todo.config.security.dto.CustomUserDetails;
+import com.todo.member.model.MemberDTO;
+import com.todo.member.service.MemberService;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -35,23 +40,25 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class CategoryController {
 	
 	private final CategoryService categoryService;
+	private final MemberService memberService;
 	
 	// 카테고리 내용 생성 로직
 	@PostMapping
-	public ResponseEntity<ResponseCategoryDTO> insertCategory(@RequestBody RequestCategoryDTO req){
-	    Long maxOrder = categoryService.findMaxOrder(req.getMemberId()) + 1;
+	public ResponseEntity<ResponseCategoryDTO> insertCategory(@RequestBody RequestCategoryDTO req, @AuthenticationPrincipal Authentication authentication){
+	    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long memberId = getMember(userDetails.getUsername()).getId();
+		Long maxOrder = categoryService.findMaxOrder(req.getMemberId()) + 1;
 	    log.info("maxOrder : " + maxOrder);
 	    Category category = Category.builder()
 	            .contents(req.getContents())
 	            .order(maxOrder)
 	            .color(req.getColor())
-	            .memberId(req.getMemberId())
+	            .memberId(memberId)
 	            .build();
 	    Long savedCategoryId = categoryService.insertCategory(category);
 	    ResponseCategoryDTO responseCategory = new ResponseCategoryDTO(savedCategoryId);
 	    return ResponseEntity.status(HttpStatus.CREATED).body(responseCategory);
 	}
-	
 	
 	// 카테고리 계정별 카테고리 불러오기 로직
 	@GetMapping("/{memberId}")
@@ -103,5 +110,9 @@ public class CategoryController {
     	categoryService.updateOrderOnDelete(category.getMemberId(), category.getOrder());
         return ResponseEntity.noContent().build();
     }
+	
+	private MemberDTO getMember(String userEmail) {
+	       return memberService.findByEmail(userEmail);
+	    }
 	
 }
