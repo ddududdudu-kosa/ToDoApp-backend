@@ -21,8 +21,8 @@
 		VALUES
 		(
 			MEMBER_SEQ.NEXTVAL,
-			#{role},
-			111,
+			#{role}, 
+			0, 
 			'open',
 			#{email},
 			#{nickname},
