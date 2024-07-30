@@ -65,7 +65,7 @@ public class MemberServiceImpl implements MemberService {
         
         joinDTO.setPassword(bCryptPasswordEncoder.encode(password));
         joinDTO.setRole("ROLE_USER");
-
+        log.info("insert 세팅 : {}", joinDTO);
         memberMapper.insertMember(joinDTO);
 		
 	}
