@@ -6,7 +6,7 @@
 	<insert id="insertCategory" parameterType="com.todo.categorys.domain.Category" useGeneratedKeys="true">
         INSERT INTO categories(
 						contents, 
-						"order", 
+						c_order, 
 						color, 
 						createat, 
 						member_id)
@@ -22,7 +22,7 @@
 	<select id="selectCategoriesByMemberId" resultType="com.todo.categorys.domain.Category">
         SELECT * FROM categories 
         	WHERE member_id = #{memberId}
-        	ORDER BY "order"
+        	ORDER BY c_order
     </select>
     
     <!-- 카테고리 삭제 -->
@@ -34,7 +34,8 @@
     <!-- 카테고리 변경 -->
     <update id="updateCategory" parameterType="com.todo.categorys.domain.Category">
     	UPDATE categories
-    		SET contents = #{contents}, 
+    		SET 
+    			contents = #{contents}, 
     			color = #{color}, 
     			updateat = SYSDATE
         	WHERE id = #{id}
@@ -42,7 +43,7 @@
     
     <!--  멤버별 카테고리 순서 체크 -->
     <select id="findMaxOrder" parameterType="long" resultType="long">
-    	SELECT COALESCE(MAX("order"), 0) AS maxOrder 
+    	SELECT COALESCE(MAX(c_order), 0) AS maxOrder 
     		FROM categories 
     		WHERE member_id = #{memberId}
 	</select>
@@ -50,13 +51,20 @@
 	<!-- 카테고리 삭제시 순서 재정렬 -->
 	<update id="updateOrderOnDelete">
     	UPDATE categories 
-    		SET "order" = "order" - 1 
+    		SET c_order = c_order - 1 
     		WHERE member_id = #{memberId} 
-    			AND "order" > #{order}
+    			AND c_order > #{order}
 	</update>
 	
 	<select id="findByCategoryId" parameterType="long" resultType="com.todo.categorys.domain.Category">
-	    SELECT id, contents, "order", color, createat, updateat, member_id
+	    SELECT 
+	    				id, 
+	    				contents, 
+	    				c_order, 
+	    				color, 
+	    				createat, 
+	    				updateat, 
+	    				member_id
 	    	FROM categories
 	    	WHERE id = #{id}
 	</select>

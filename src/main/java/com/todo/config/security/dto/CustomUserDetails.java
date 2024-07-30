@@ -1,38 +1,50 @@
-package com.todo.config.security;
+package com.todo.config.security.dto;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import lombok.Data;
+import com.todo.member.model.MemberDTO;
 
-@Data
-public class CustomUserDetail implements UserDetails{
 
-	private String email;
-	private String password;
-	private String role;
-	
+public class CustomUserDetails implements UserDetails  {
+
+    private final MemberDTO memberDTO;
+
+    public CustomUserDetails(MemberDTO memberDTO) {
+        this.memberDTO = memberDTO;
+    }
+    
+    // role값 반환
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> roles = new ArrayList<>();
-        roles.add(new SimpleGrantedAuthority(role));
 
-        return roles;
+		Collection<GrantedAuthority> collection = new ArrayList<>();
+		
+		collection.add(new GrantedAuthority() {
+
+            @Override
+            public String getAuthority() {
+
+                return memberDTO.getRole();
+            }
+        });
+		
+		return collection;
 	}
-	
+
+	// password값을 반환
 	@Override
 	public String getPassword() {
-		return this.password;
+		return memberDTO.getPassword();
 	}
-	
+
+	// id를 반환
 	@Override
 	public String getUsername() {
-		return this.email;
+		return memberDTO.getEmail();
 	}
 	
     @Override
@@ -54,4 +66,5 @@ public class CustomUserDetail implements UserDetails{
     public boolean isEnabled() {
         return true;
     }
+
 }

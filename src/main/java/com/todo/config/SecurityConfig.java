@@ -1,26 +1,25 @@
 package com.todo.config;
 
+import java.util.Collections;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.context.DelegatingSecurityContextRepository;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 
-import com.todo.config.security.CustomAccessDeniedHandler;
-import com.todo.config.security.CustomAuthenticationFailureHandler;
-import com.todo.config.security.CustomAuthenticationFilter;
-import com.todo.config.security.CustomAuthenticationSuccessHandler;
-import com.todo.config.security.CustomLoginAuthenticationEntryPoint;
+import com.todo.config.security.jwt.JWTFilter;
+import com.todo.config.security.jwt.JWTUtil;
+import com.todo.config.security.jwt.LoginFilter;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -28,59 +27,82 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
-    private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
-    private final CustomLoginAuthenticationEntryPoint authenticationEntryPoint;
-    private final AuthenticationConfiguration authenticationConfiguration;
-    private final CustomAccessDeniedHandler accessDeniedHandler;
+	//AuthenticationManager가 인자로 받을 AuthenticationConfiguraion 객체 생성자 주입
+	private final AuthenticationConfiguration authenticationConfiguration;
+	private final JWTUtil jwtUtil; 
 
-    @Bean
-    public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
+	//AuthenticationManager Bean 등록
+	@Bean
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+	    return configuration.getAuthenticationManager();
+	}
+	
+	// 비밀번호 해싱 저장
+	@Bean
+	public BCryptPasswordEncoder bCryptPasswordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+	
+	@Bean
+	public SecurityFilterChain filterChain (HttpSecurity http) throws Exception {
+		
+		// cors설정
+		http
+			.cors((cors -> cors.configurationSource(new CorsConfigurationSource() {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request -> request
-                        .requestMatchers("/feed/**").authenticated()
-                        .requestMatchers("/mypage/**").authenticated()
-                        .requestMatchers("/feed/**").authenticated()
-                        .requestMatchers("/diary/**").permitAll() //  임시 허용
-                        .requestMatchers("/like/**").authenticated()
-                        .requestMatchers("/notice/**").authenticated()
-                        .requestMatchers("/admin/**").authenticated()
-                        .anyRequest().permitAll())
-                .addFilterBefore(ajaxAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(config -> config
-                        .authenticationEntryPoint(authenticationEntryPoint)
-                        .accessDeniedHandler(accessDeniedHandler));
 
-        return http.build();
-    }
+    @Override
+    public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
 
-    @Bean
-    public CustomAuthenticationFilter ajaxAuthenticationFilter() throws Exception {
-        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter();
-        customAuthenticationFilter.setAuthenticationManager(authenticationManager());
-        customAuthenticationFilter.setAuthenticationSuccessHandler(customAuthenticationSuccessHandler);
-        customAuthenticationFilter.setAuthenticationFailureHandler(customAuthenticationFailureHandler);
-       
-        // **
-        customAuthenticationFilter.setSecurityContextRepository(
-                new DelegatingSecurityContextRepository(
-                        new RequestAttributeSecurityContextRepository(),
-                        new HttpSessionSecurityContextRepository()
-                ));
+      CorsConfiguration configuration = new CorsConfiguration();
 
-        return customAuthenticationFilter;
-    }
+      configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+      configuration.setAllowedMethods(Collections.singletonList("*"));
+      configuration.setAllowCredentials(true);
+      configuration.setAllowedHeaders(Collections.singletonList("*"));
+      configuration.setMaxAge(3600L);
 
-    @Bean
-    public AuthenticationManager authenticationManager() throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
+			configuration.setExposedHeaders(Collections.singletonList("Authorization"));
+
+      return configuration;
+      }
+			})));
+		
+		// csrf disable
+		http
+			.csrf((auth) -> auth.disable());
+		
+		// Form 로그인 방식 disable
+		http
+			.formLogin((auth) -> auth.disable());
+		
+		// http basic 인증 방식 disable
+		http
+			.httpBasic((auth) -> auth.disable());
+		
+		// 경로별 인가 작업
+		http
+			.authorizeHttpRequests((auth) -> auth
+					.requestMatchers("/login", "/", "/join","/api/mail/**").permitAll()	// /login, /, /join 경로는 모두에게 허용
+					.requestMatchers("/admin/**").hasRole("ADMIN")				// /admin 경로에는 ADMIN권한만 가진 계정만 허용
+					.anyRequest().authenticated());						// 그 외의 모든 경로에는 로그인한 사용자만 허용
+//					.anyRequest().permitAll());
+		//JWTFilter 등록 (로그인 필터 앞에다 등록)
+		http
+			.addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
+		
+		//필터 추가 LoginFilter()는 인자를 받음 (AuthenticationManager() 메소드에 authenticationConfiguration 객체를 넣어야 함) 따라서 등록 필요
+		http
+			.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
+		
+		
+		// 세션 설정 (jwt에서는 필수)
+		http
+			.sessionManagement((session) -> session
+					.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+		
+		
+		return http.build();
+	}
 }

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.todo.mypage.mapper.MyPageMapper">
+
+	<!-- ResultMap 정의 -->
+	 <resultMap id="myInfoResultMap" type="com.todo.mypage.domain.MemberInfo">
+	   <result property="id" column="ID" />
+	   <result property="rating" column="RATING" />
+	   <result property="privacy" column="PRIVACY" />
+	   <result property="email" column="EMAIL" />
+	   <result property="nickname" column="NICKNAME" />
+	   <result property="intro" column="INTRO" />
+	   <result property="profileImg" column="PROFILEIMG" />
+	 </resultMap>
+	
+	  <resultMap id="myFollowsInfoResultMap" type="com.todo.mypage.domain.FollowingMemberInfo">
+	    <result property="id" column="id" />
+	    <result property="nickname" column="nickName" />
+	    <result property="email" column="email" />
+	    <result property="rating" column="rating" />
+	    <result property="intro" column="intro" />
+	    <result property="profileImg" column="profileImg" />
+	  </resultMap>
+	  
+	  <resultMap id="myStatsInfoResultMap" type="com.todo.mypage.domain.MyStats">
+	    <result property="monthlyAchievementRate" column="MONTHLY_ACHIEVEMENT_RATE" />
+	    <result property="monthlyAchievementCount" column="MONTHLY_ACHIEVEMENT_COUNT" />
+	  </resultMap>
+	  
+	  <resultMap id="myFollowStatsInfoResultMap" type="com.todo.mypage.domain.FollowStats">
+	    <result property="followMonthlyAchievementRate" column="FOLLOW_ACHIEVEMENT_RATE" />
+	    <result property="followMonthlyAchievementCount" column="FOLLOW_ACHIEVEMENT_COUNT" />
+	  </resultMap>
+  
+	<select id="getMyInfo" resultMap="myInfoResultMap">
+	     SELECT
+			ID,
+			RATING,
+			PRIVACY,
+			EMAIL,
+			NICKNAME,
+			INTRO,
+			PROFILEIMG
+        FROM MEMBER
+        WHERE ID = #{memberId}
+	 </select>
+	 
+	 <select id="getMyFollowsInfo" resultMap="myFollowsInfoResultMap">
+        SELECT
+            M.ID AS "id",
+            M.NICKNAME AS "nickName",
+            M.EMAIL AS "email",
+            M.RATING AS "rating",
+            M.INTRO AS "intro",
+            M.PROFILEIMG AS "profileImg"
+        FROM FOLLOWS F
+        INNER JOIN MEMBER M
+        ON F.FOLLOW_ID = M.ID
+        WHERE F.MEMBER_ID = #{memberId}
+	 </select>
+
+  	<select id="getMyStatsInfo" resultMap="myStatsInfoResultMap">
+	    SELECT
+			NVL(MONTHLY_ACHIEVEMENT_RATE,0) AS "MONTHLY_ACHIEVEMENT_RATE",
+			NVL(MONTHLY_ACHIEVEMENT_COUNT,0) AS "MONTHLY_ACHIEVEMENT_COUNT"
+		FROM STATS
+		WHERE MEMBER_ID = #{memberId}
+	 </select>
+	
+	  <select id="getMyFollowStatsInfo" resultMap="myFollowStatsInfoResultMap">
+	    SELECT
+			ROUND(AVG(S.MONTHLY_ACHIEVEMENT_RATE),2) AS "FOLLOW_ACHIEVEMENT_RATE",
+			ROUND(AVG(S.MONTHLY_ACHIEVEMENT_COUNT),2) AS "FOLLOW_ACHIEVEMENT_COUNT"
+		FROM FOLLOWS F
+		INNER JOIN STATS S
+		ON F.FOLLOW_ID = S.MEMBER_ID
+		WHERE F.MEMBER_ID = #{memberId}
+	 </select>
+
+	
+</mapper>

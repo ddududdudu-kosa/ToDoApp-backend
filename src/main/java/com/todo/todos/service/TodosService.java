@@ -6,10 +6,12 @@ import java.util.List;
 import com.todo.todos.domain.Todo;
 
 public interface TodosService {
-	Todo getTodoById(Long id);
-	List<Todo> getAllTodos();
-	boolean createTodo(Todo todo);
-	boolean updateTodo(Todo todo);
-	boolean deleteTodoById(Long id, Long order, Long categoriesId, Date date);
-	
+	List<Todo> getTodosByMemberId(Long memberId);
+    Long addTodo(Todo todo);
+    Todo updateTodo(Todo todo);
+    void deleteTodo(Long id);
+    Long findByTodoMaxOrder(Long categoryId);
+    Todo findByTodoId(Long TodoId);
+    void updateOrderOnDelete(Long categoriesId, Long order);
+	List<Todo> findTodosByUserIdAndDate(Long userId, Date date);
 }
