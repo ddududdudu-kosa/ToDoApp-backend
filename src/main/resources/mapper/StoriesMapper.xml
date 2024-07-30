@@ -85,7 +85,7 @@
 </select>
 
 <select id="findActiveStoriesByMemberId" resultMap="storyResultMap">
-    SELECT id, title, storyImg, member_id, CREATEAT, TOTAL_LIKES
+    SELECT id, title, storyImg, member_id, CREATEAT,TOTAL_LIKES
     FROM stories
     WHERE member_id = #{memberId}
       AND CREATEAT > SYSDATE - INTERVAL '24' HOUR

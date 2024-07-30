@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.todo.diaries.domain.dto.DiaryDTO;
+import com.todo.diaries.domain.dto.DiaryDetail;
 import com.todo.diaries.mapper.DiaryMapper;
 
 @Service
@@ -47,4 +48,10 @@ public class DiaryService {
     public void deleteDiary(Long id) {
         diaryMapper.deleteDiary(id);
     }
+     
+    public List<DiaryDetail> getAllRecentDiaries(int page, int size) {
+        int offset = (page - 1) * size;
+        return diaryMapper.findAllRecentDiaries(offset, size);
+    }
+
 }

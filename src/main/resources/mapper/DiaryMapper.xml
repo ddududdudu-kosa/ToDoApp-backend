@@ -50,4 +50,32 @@
     <delete id="deleteDiary" parameterType="Long">
         DELETE FROM diaries WHERE id = #{id}
     </delete>
+    
+    
+   <resultMap id="DiaryDetailResultMap" type="com.todo.diaries.domain.dto.DiaryDetail">
+   		<result property="id" column="Id"/>
+	    <result property="memberId" column="member_Id"/>
+	    <result property="nickname" column="nickname"/>
+	    <result property="profileImg" column="profileImg"/>
+	    <result property="privacy" column="privacy"/>
+	    <result property="title" column="title"/> 
+	    <result property="diaryDate" column="d_date"/>
+	    <result property="emoji" column="emoji"/>
+	    <result property="temperature" column="temperature"/>
+	</resultMap>
+	
+	<select id="findAllRecentDiaries" resultMap="DiaryDetailResultMap">
+	    SELECT d.id, m.id AS member_Id, m.nickname, m.profileImg, m.privacy, d.title, d.d_date, d.emoji, d.temperature
+	    FROM diaries d
+	    JOIN member m ON d.member_id = m.id
+	    WHERE d.d_date = (
+	        SELECT MAX(d2.d_date)
+	        FROM diaries d2
+	        WHERE d2.member_id = d.member_id
+	    )
+	    ORDER BY d.createat DESC
+    	OFFSET #{offset} ROWS FETCH NEXT #{size} ROWS ONLY
+	</select>	
+	
+	
 </mapper>

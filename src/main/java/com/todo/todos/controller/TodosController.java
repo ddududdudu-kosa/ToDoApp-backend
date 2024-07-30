@@ -15,17 +15,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.todo.categorys.controller.CategoryController;
-import com.todo.categorys.service.CategoryService;
+import com.todo.todos.domain.CheckedTodoDTO;
 import com.todo.todos.domain.RequestTodoDTO;
 import com.todo.todos.domain.ResponseTodoDTO;
 import com.todo.todos.domain.Todo;
 import com.todo.todos.service.TodosService;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 @RestController
@@ -94,4 +93,20 @@ public class TodosController {
         List<Todo> todos = todoService.findTodosByUserIdAndDate(memberId, date);
         return ResponseEntity.ok(todos);
     }
+    
+    
+    @GetMapping("/checkedList")
+    public ResponseEntity<List<CheckedTodoDTO>> getCheckedTodos(
+        @RequestParam(name = "page", defaultValue = "1") int page,
+        @RequestParam(name = "size", defaultValue = "10") int size) {
+
+    	//int fixedSize = 10; 페이지 크기를 10으로 고정  위에 @RequestParam에서 size 제거시
+        List<CheckedTodoDTO> todos = todoService.getCheckedTodos(page, size);
+        if (todos.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(todos);
+    }
+
+
 }

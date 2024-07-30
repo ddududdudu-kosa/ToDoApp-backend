@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.todo.diaries.domain.dto.DiaryDTO;
+import com.todo.diaries.domain.dto.DiaryDetail;
 
 @Mapper
 public interface DiaryMapper {
@@ -18,4 +19,6 @@ public interface DiaryMapper {
     void updateDiary(DiaryDTO diary);
 
     void deleteDiary(Long id);
-}
+
+    List<DiaryDetail> findAllRecentDiaries(@Param("offset") int offset, @Param("size") int size);
+   }

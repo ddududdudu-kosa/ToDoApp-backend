@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.todo.diaries.domain.dto.DiaryDTO;
+import com.todo.diaries.domain.dto.DiaryDetail;
 import com.todo.diaries.service.DiaryService;
 import com.todo.diaries.service.S3Service;
 
@@ -115,4 +116,18 @@ public class DiaryController {
     public void deleteDiary(@PathVariable Long id) {
         diaryService.deleteDiary(id);
     }
+    
+    
+    @GetMapping("/recentList")
+    public ResponseEntity<List<DiaryDetail>> getRecentDiaries(
+    	@RequestParam(name = "page",defaultValue = "1") int page,
+        @RequestParam(name = "size",defaultValue = "10") int size) {
+        List<DiaryDetail> diaries = diaryService.getAllRecentDiaries(page, size);
+        if (diaries.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(diaries);
+    }
+    
+    
 }

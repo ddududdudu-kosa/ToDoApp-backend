@@ -80,7 +80,7 @@ public class StoriesController {
                 }
                 return ResponseEntity.ok(story);
             } else {
-            	log.info("ㅁㅁ내꺼면 상세조회 방문자목록,좋아요목록은 다른api예정"  );
+            	log.info("ㅁㅁ내꺼면 상세조회 방문자목록,좋아요목록은 다른api예정");
                 return ResponseEntity.notFound().build();
             }
         } catch (Exception e) {
@@ -101,10 +101,6 @@ public class StoriesController {
         }
     }
     
-    private MemberDTO getMember(String userEmail) {
-    	return memberService.findByEmail(userEmail);
-    }
-   
     @GetMapping("/{storiesId}/details")
     public ResponseEntity<?> getStoryDetails(@PathVariable("storiesId") Long storiesId, Authentication authentication) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -187,6 +183,12 @@ public class StoriesController {
 
     
     
+    
+
+    private MemberDTO getMember(String userEmail) {
+    	return memberService.findByEmail(userEmail);
+    }
+   
     
 
 }
