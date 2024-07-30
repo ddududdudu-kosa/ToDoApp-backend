@@ -2,31 +2,106 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.todo.todos.mapper.TodosMapper">
-	<!-- Select todo by id -->
-    <select id="selectTodoById" resultType="com.todo.todos.domain.Todo">
-        SELECT * FROM todos WHERE id = #{id}
+	<select id="findTodosByMemberId" resultType="com.todo.todos.domain.Todo">
+        SELECT *
+        FROM todos
+        	WHERE member_id = #{memberId}
     </select>
 
-    <!-- Select all todos -->
-    <select id="selectAllTodos" resultType="com.todo.todos.domain.Todo">
-        SELECT * FROM todos
+	<!-- todo 등록하는 로직 -->
+	<insert id="insertTodo" parameterType="com.todo.todos.domain.Todo" useGeneratedKeys="true">
+	    INSERT INTO todos (
+				        contents,
+				        t_order,
+				        t_date,
+				        status,
+				        createat,
+				        categories_id
+    		) VALUES (
+				        #{contents},
+				        #{order},
+				        #{date},
+				        '2',  <!-- 기본값으로 '2' 지정 -->
+				        SYSDATE,  <!-- 생성 시각은 현재 시각으로 자동 설정 -->
+				        #{categoriesId}
+    )
+	</insert>
+	
+	<select id="getMaxOrder" resultType="java.lang.Long">
+	    SELECT MAX(t_order)
+	    FROM todos
+		    AND categories_id = #{categoriesId}
+	</select>
+	
+	<update id="reorderTodos">
+	    UPDATE todos
+	    SET t_order = t_order - 1
+	    	WHERE t_order > #{order} 
+	    	AND member_id = #{memberId} 
+	    	AND categories_id = #{categoriesId}
+	</update>
+	
+	<!--  카테고리별 todos 순서 체크 -->
+    <select id="findByTodoMaxOrder" parameterType="long" resultType="long">
+    	SELECT COALESCE(MAX(t_order), 0) AS maxOrder 
+    		FROM todos 
+    		WHERE categories_id = #{categoriesId}
+	</select>
+
+    <update id="updateTodo" parameterType="com.todo.todos.domain.Todo">
+	    UPDATE todos
+		    SET
+		        contents = #{contents},
+		        t_date = #{date},
+		        categories_id = #{categoriesId},
+		        updateat = SYSDATE
+	    	WHERE id = #{id}
+	</update>
+	
+	<resultMap id="todoResultMap" type="com.todo.todos.domain.Todo">
+	    <result property="id" column="id"/>
+	    <result property="order" column="t_order"/>
+	    <result property="contents" column="contents"/>
+	    <result property="date" column="t_date"/>
+	    <result property="status" column="status"/>
+	    <result property="createAt" column="createat"/>
+	    <result property="updateAt" column="updateat"/>
+	    <result property="categoriesId" column="categories_id"/>
+	</resultMap>
+
+    <select id="findByTodoId" parameterType="long" resultMap="todoResultMap">
+        SELECT 
+        					id, 
+        					t_order, 
+        					contents, 
+        					t_date, 
+        					status, 
+        					createat,
+        					updateat,
+        					categories_id
+        	FROM todos
+        	WHERE id = #{id}
     </select>
 
-    <!-- Insert todo -->
-    <insert id="insertTodo" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO todos ("order", contents, "date", status, start_date, end_date, mon, tue, wen, thu, fri, sat, sun, createat)
-        VALUES (#{order}, #{contents}, #{date}, #{status}, #{startDate}, #{endDate}, #{mon}, #{tue}, #{wen}, #{thu}, #{fri}, #{sat}, #{sun}, CURRENT_DATE)
-    </insert>
-
-    <!-- Update todo -->
-    <update id="updateTodo">
-        UPDATE todos SET "order" = #{order}, contents = #{contents}, "date" = #{date}, status = #{status},
-        start_date = #{startDate}, end_date = #{endDate}, mon = #{mon}, tue = #{tue}, wen = #{wen},
-        thu = #{thu}, fri = #{fri}, sat = #{sat}, sun = #{sun}, updateat = CURRENT_DATE WHERE id = #{id}
-    </update>
-
-    <!-- Delete specific todo -->
-    <delete id="deleteSpecificTodo">
-        DELETE FROM todos WHERE id = #{id} AND "order" = #{order} AND categories_id = #{categoriesId} AND "date" = #{date}
+    <delete id="deleteTodo">
+        DELETE FROM todos
+        	WHERE id = #{id}
     </delete>
+    
+    <update id="updateOrderOnDelete">
+    	UPDATE todos 
+    		SET t_order = t_order - 1 
+    		WHERE categories_id = #{categoriesId} 
+    			AND t_order > #{order}
+	</update>
+	
+	<!-- 일별 todo 조회 -->
+	<select id="findTodosByUserIdAndDate" parameterType="map" resultMap="todoResultMap">
+	    SELECT t.*
+	    FROM todos t
+	    JOIN categories c ON t.categories_id = c.id
+	    JOIN member m ON c.member_id = m.id
+	    WHERE m.id = #{memberId}
+	    AND TRUNC(t.t_date) = TRUNC(#{date})
+	</select>
 </mapper>

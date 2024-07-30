@@ -1,29 +1,27 @@
 package com.todo.todos.domain;
 
+import java.time.LocalDate;
 import java.util.Date;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
-@Setter
+@Builder
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public class Todo {
-    private int id;
-    private int order;
+    private Long id;
+    private Long order;
     private String contents;
     private Date date;
     private String status;
-    private Date startDate;
-    private Date endDate;
-    private String mon;
-    private String tue;
-    private String wen;
-    private String thu;
-    private String fri;
-    private String sat;
-    private String sun;
     private Date createAt;
     private Date updateAt;
-    private int categoriesId;
-    
+    private Long categoriesId;
 }

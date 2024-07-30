@@ -2,6 +2,7 @@ package com.todo.todos.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,32 +17,46 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TodosServiceImpl implements TodosService {
 
-	private final TodosMapper todosMapper;
-
+	private final TodosMapper todoMapper;
+	
 	@Override
-	public Todo getTodoById(Long id) {
-		return todosMapper.selectTodoById(id);
+	public Long addTodo(Todo todo) {
+        return todoMapper.insertTodo(todo);
 	}
 
 	@Override
-	public List<Todo> getAllTodos() {
-		return todosMapper.selectAllTodos();
+	public List<Todo> getTodosByMemberId(Long memberId) {
+		return todoMapper.findTodosByMemberId(memberId);
 	}
 
 	@Override
-	public boolean createTodo(Todo todo) {
-		return todosMapper.insertTodo(todo) > 0;
+	public Todo updateTodo(Todo todo) {
+		todoMapper.updateTodo(todo);
+        return todoMapper.findByTodoId(todo.getId());
 	}
 
 	@Override
-	public boolean updateTodo(Todo todo) {
-		return todosMapper.updateTodo(todo) > 0;
+	public void deleteTodo(Long id) {
+		todoMapper.deleteTodo(id);
 	}
 
 	@Override
-	@Transactional
-	public boolean deleteTodoById(Long id, Long order, Long categoriesId, Date date) {
-		return todosMapper.deleteTodoById(id, order, categoriesId, date) > 0;
+	public Long findByTodoMaxOrder(Long categoryId) {
+		return todoMapper.findByTodoMaxOrder(categoryId);
 	}
 
+	@Override
+	public Todo findByTodoId(Long todoId) {
+		return todoMapper.findByTodoId(todoId);
+	}
+
+	@Override
+	public void updateOrderOnDelete(Long categoriesId, Long order) {
+		todoMapper.updateOrderOnDelete(categoriesId, order);
+	}
+
+	@Override
+	public List<Todo> findTodosByUserIdAndDate(Long memberId, Date date) {
+		return todoMapper.findTodosByUserIdAndDate(memberId, date);
+	}
 }
