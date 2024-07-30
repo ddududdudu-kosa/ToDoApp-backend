@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class MemberDTO {
 
-	private Integer id;
+	private Long id;
 	private String role;
 	private String rating;
 	private String privacy;
