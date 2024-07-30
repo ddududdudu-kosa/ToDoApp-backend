@@ -55,7 +55,9 @@ public class SecurityConfig {
     @Override
     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
 
+
       CorsConfiguration configuration = new CorsConfiguration();
+
 
       configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
       configuration.setAllowedMethods(Collections.singletonList("*"));
@@ -63,7 +65,7 @@ public class SecurityConfig {
       configuration.setAllowedHeaders(Collections.singletonList("*"));
       configuration.setMaxAge(3600L);
 
-			configuration.setExposedHeaders(Collections.singletonList("Authorization"));
+			configuration.setExposedHeaders(Collections.singletonList("Access"));
 
       return configuration;
       }
