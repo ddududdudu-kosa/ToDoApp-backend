@@ -22,7 +22,7 @@
 		(
 			MEMBER_SEQ.NEXTVAL,
 			#{role},
-			1,
+			0,
 			'open',
 			#{email},
 			#{nickname},
