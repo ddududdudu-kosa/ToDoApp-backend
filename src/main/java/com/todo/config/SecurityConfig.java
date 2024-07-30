@@ -50,21 +50,25 @@ public class SecurityConfig {
 		http
 			.cors((cors -> cors.configurationSource(new CorsConfigurationSource() {
 
-                @Override
-                public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
 
-                    CorsConfiguration configuration = new CorsConfiguration();
 
-                    configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
-                    configuration.setAllowedMethods(Collections.singletonList("*"));
-                    configuration.setAllowCredentials(true);
-                    configuration.setAllowedHeaders(Collections.singletonList("*"));
-                    configuration.setMaxAge(3600L);
+    @Override
+    public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
 
-					configuration.setExposedHeaders(Collections.singletonList("Access"));
 
-                    return configuration;
-                }
+      CorsConfiguration configuration = new CorsConfiguration();
+
+
+      configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+      configuration.setAllowedMethods(Collections.singletonList("*"));
+      configuration.setAllowCredentials(true);
+      configuration.setAllowedHeaders(Collections.singletonList("*"));
+      configuration.setMaxAge(3600L);
+
+			configuration.setExposedHeaders(Collections.singletonList("Access"));
+
+      return configuration;
+      }
 			})));
 		
 		// csrf disable
@@ -84,8 +88,8 @@ public class SecurityConfig {
 			.authorizeHttpRequests((auth) -> auth
 					.requestMatchers("/login", "/", "/join","/api/mail/**").permitAll()	// /login, /, /join 경로는 모두에게 허용
 					.requestMatchers("/admin/**").hasRole("ADMIN")				// /admin 경로에는 ADMIN권한만 가진 계정만 허용
-					.anyRequest().authenticated());							// 그 외의 모든 경로에는 로그인한 사용자만 허용
-		
+					.anyRequest().authenticated());						// 그 외의 모든 경로에는 로그인한 사용자만 허용
+//					.anyRequest().permitAll());
 		//JWTFilter 등록 (로그인 필터 앞에다 등록)
 		http
 			.addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);

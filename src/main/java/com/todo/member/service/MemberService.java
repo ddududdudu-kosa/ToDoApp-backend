@@ -1,11 +1,13 @@
 package com.todo.member.service;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
 import com.todo.member.model.JoinDTO;
 import com.todo.member.model.MemberDTO;
+import com.todo.member.model.UserProfile;
 
 public interface MemberService {
 
@@ -14,4 +16,6 @@ public interface MemberService {
 	
 	// 이메일로 계정정보 가져오기
 	MemberDTO findByEmail(String email);
+	
+	List<UserProfile> getRelevantUserProfiles(Long userId);
 }

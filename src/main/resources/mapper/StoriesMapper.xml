@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.todo.story.dao.StoriesMapper">
+
+ 
+	<!-- 스토리 생성 -->
+    <insert id="insertStory">
+		INSERT INTO Stories
+		(
+			ID,
+			TITLE,
+			STORYIMG,
+			TOTAL_LIKES,
+			MEMBER_ID,
+			CREATEAT
+		)
+		VALUES
+		(
+			Stories_SEQ.NEXTVAL, 
+			#{title},
+			#{storyImg},
+			0,
+			#{memberId}, 
+			SYSDATE
+		) 
+	</insert> 
+	
+	<!-- 스토리 삭제 -->
+	<delete id="deleteStory" parameterType="map">
+    DELETE FROM stories 
+    WHERE id = #{id}
+    AND member_id = #{memberId}
+	</delete>
+	
+ 
+ 
+ <resultMap id="storyResultMap" type="com.todo.story.model.Stories">
+    <result property="id" column="id" />
+    <result property="title" column="title" />
+    <result property="storyImg" column="storyImg" />
+    <result property="memberId" column="member_id" />
+    <result property="totalLikes" column="total_likes" />
+    <result property="createAt" column="CREATEAT" />
+</resultMap>
+
+<select id="findStoryById" resultMap="storyResultMap">
+    SELECT id, title, storyImg, member_id, CREATEAT, TOTAL_LIKES
+    FROM stories
+    WHERE id = #{storiesId}
+</select>
+ 
+ 
+ <resultMap id="storyLikesResultMap" type="com.todo.story.model.StoryLikes">
+    <result property="id" column="id" />
+    <result property="createAt" column="CREATEAT" />
+    <result property="memberId" column="member_id" />
+    <result property="storiesId" column="stories_id" />
+</resultMap>
+ 
+<select id="findLikesByStoryId" resultMap="storyLikesResultMap">
+    SELECT id, CREATEAT, member_id, stories_id 
+    FROM s_likes 
+    WHERE stories_id = #{storiesId}
+</select>
+    
+    <resultMap id="storyVisitorsResultMap" type="com.todo.story.model.StoryVisitors">
+    <result property="id" column="id" />
+    <result property="createAt" column="CREATEAT" />
+    <result property="memberId" column="member_id" />
+    <result property="storiesId" column="stories_id" />
+</resultMap>
+<select id="findVisitorsByStoryId" resultMap="storyVisitorsResultMap">
+    SELECT id, CREATEAT, member_id, stories_id 
+    FROM story_visitors 
+    WHERE stories_id = #{storiesId}
+</select>
+
+
+<select id="findAllStoriesByMemberId" resultMap="storyResultMap">
+    SELECT id, title, storyImg, member_id, CREATEAT, TOTAL_LIKES
+    FROM stories
+    WHERE member_id = #{memberId}
+    ORDER BY CREATEAT DESC
+</select>
+
+<select id="findActiveStoriesByMemberId" resultMap="storyResultMap">
+    SELECT id, title, storyImg, member_id, CREATEAT,TOTAL_LIKES
+    FROM stories
+    WHERE member_id = #{memberId}
+      AND CREATEAT > SYSDATE - INTERVAL '24' HOUR
+    ORDER BY CREATEAT DESC
+</select>
+
+
+    
+
+    
+
+
+ 
+	<!-- 방문 기록 -->
+<insert id="insertVisitor">
+    <!-- 본인의 스토리가 아니면서, 아직 방문 기록이 없는 경우에만 INSERT -->
+    INSERT INTO story_visitors (ID,CREATEAT, member_id, stories_id)
+    SELECT story_visitors_SEQ.NEXTVAL, SYSDATE, #{memberId}, #{storiesId}
+    FROM dual
+    WHERE NOT EXISTS (
+        SELECT 1 FROM story_visitors 
+        WHERE member_id = #{memberId} AND stories_id = #{storiesId}
+    )
+    AND NOT EXISTS (
+        SELECT 1 FROM stories 
+        WHERE id = #{storiesId} AND member_id = #{memberId}
+    )
+</insert>
+
+
+
+
+<!-- 좋아요 중복 체크 -->
+<select id="checkLikeExists" resultType="int">
+    SELECT COUNT(*) FROM s_likes
+    WHERE member_id = #{memberId} AND stories_id = #{storiesId}
+</select>
+
+<!-- 본인의 스토리인지 체크 -->
+<select id="checkIsOwner" resultType="int">
+    SELECT COUNT(*) FROM stories
+    WHERE id = #{storiesId} AND member_id = #{memberId}
+</select>
+<!-- 좋아요 생성 -->
+<insert id="insertLike">
+    INSERT INTO s_likes (ID,CREATEAT, member_id, stories_id)
+    VALUES (s_likes_SEQ.NEXTVAL, SYSDATE, #{memberId}, #{storiesId})
+</insert>
+
+
+<!-- 좋아요 삭제 -->
+<delete id="deleteLike" parameterType="map">
+    DELETE FROM s_likes
+    WHERE member_id = #{memberId} AND stories_id = #{storiesId}
+</delete>
+
+
+<!-- 좋아요 수 업데이트 -->
+<update id="updateLikesCount">
+    UPDATE stories
+    SET total_likes = (
+        SELECT COUNT(*) FROM s_likes WHERE stories_id = #{storiesId}
+    )
+    WHERE id = #{storiesId}
+</update>
+	
+	
+</mapper>

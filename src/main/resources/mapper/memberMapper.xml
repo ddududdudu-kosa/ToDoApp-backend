@@ -21,8 +21,8 @@
 		VALUES
 		(
 			MEMBER_SEQ.NEXTVAL,
-			#{role},
-			0,
+			#{role}, 
+			0, 
 			'open',
 			#{email},
 			#{nickname},
@@ -51,6 +51,30 @@
 			UPDATEAT AS "updateat"
 		FROM MEMBER
 		WHERE EMAIL = #{email}
+	</select>
+	
+	
+	<resultMap id="relevantInfoResultMap" type="com.todo.member.model.UserProfile">
+	    <result property="id" column="id" />
+	    <result property="nickname" column="nickname" />
+	    <result property="profileImg" column="profileImg" />
+	    <result property="privacy" column="privacy" />
+	    <result property="relationType" column="relation_priority" />
+	</resultMap>
+  
+	
+	<!-- 스토리 조회 순서 relation_priority 1:나 2:팔로워 3:공개 /공개는 무한 스크롤 구현? 아니면 추천 알고리즘있어야 쓸모있을듯 -->
+	<select id="findRelevantUsers" resultMap="relevantInfoResultMap">
+		SELECT m.id, m.nickname, m.profileimg, m.privacy,
+		       CASE
+		           WHEN m.id = #{currentUserId} THEN 1   
+		           WHEN f.follow_id IS NOT NULL THEN 2   
+		           <!-- ELSE 3  -->  
+		       END AS relation_priority
+		FROM member m
+		LEFT JOIN follows f ON m.id = f.follow_id AND f.member_id = #{currentUserId}
+		WHERE <!--  m.privacy = 'open' OR -->m.id = #{currentUserId} OR f.follow_id IS NOT NULL
+		ORDER BY relation_priority ASC, m.nickname ASC 
 	</select>
 	
 </mapper>

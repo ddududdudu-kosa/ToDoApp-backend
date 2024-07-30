@@ -1,0 +1,29 @@
+package com.todo.diaries.controller;
+
+import com.todo.diaries.service.S3Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+@RestController
+@RequestMapping("/files")
+public class FileController {
+
+    private final S3Service s3Service;
+
+    @Autowired
+    public FileController(S3Service s3Service) {
+        this.s3Service = s3Service;
+    }
+
+    @PostMapping("/image/member")
+    public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) {
+        try {
+            String imageUrl = s3Service.uploadFile(file);
+            return ResponseEntity.ok(imageUrl);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("파일 업로드 실패: " + e.getMessage());
+        }
+    }
+}
