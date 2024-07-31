@@ -85,6 +85,7 @@ public class SecurityConfig {
 		http
 			.authorizeHttpRequests((auth) -> auth
 					.requestMatchers("/login", "/", "/join","/api/mail/**").permitAll()	// /login, /, /join 경로는 모두에게 허용
+					.requestMatchers("/diary/register").authenticated() // 추가
 					.requestMatchers("/admin/**").hasRole("ADMIN")				// /admin 경로에는 ADMIN권한만 가진 계정만 허용
 					.anyRequest().authenticated());						// 그 외의 모든 경로에는 로그인한 사용자만 허용
 //					.anyRequest().permitAll());
