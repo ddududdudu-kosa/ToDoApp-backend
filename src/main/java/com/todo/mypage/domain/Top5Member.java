@@ -3,12 +3,12 @@ package com.todo.mypage.domain;
 import lombok.Data;
 
 @Data
-public class FollowingMemberInfo {
+public class Top5Member {
 
-	private Long id;
 	private String email;
 	private String nickname;
-	private String rating;
-	private String intro;
+	private Integer totalAchievementCount;
 	private String profileImg;
+	private Integer rating;
+	private Long memberId;
 }
