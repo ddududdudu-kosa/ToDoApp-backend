@@ -1,5 +1,6 @@
 package com.todo.mypage.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
-import com.todo.config.security.dto.CustomUserDetails;
-import com.todo.member.dao.MemberMapper;
+import com.todo.mypage.domain.Top5Member;
 import com.todo.mypage.service.MyPageService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -47,5 +47,24 @@ public class MyPageController {
 		return ResponseEntity.status(HttpStatus.OK)
 				.header("Content-Type", "text/plain; charset=UTF-8")
 				.body(myPageService.getSaying());
+	}
+	
+	@GetMapping("/mypage/today")
+	public ResponseEntity<?> getCompleteInfo(Authentication authentication){
+		Gson gson = new Gson();
+		Map<String, Object> stats = myPageService.getTodayComplete(authentication);
+		return ResponseEntity.status(HttpStatus.OK)
+				.header("Content-Type", "text/plain; charset=UTF-8")
+				.body(gson.toJson(stats));
+	}
+	
+	@GetMapping("/mypage/top5")
+	public ResponseEntity<?> getTop5(){
+		Gson gson = new Gson();
+		List<Top5Member> list = myPageService.getTop5();
+		log.info("상위 탑5 : {}",list);
+		return ResponseEntity.status(HttpStatus.OK)
+				.header("Content-Type", "text/plain; charset=UTF-8")
+				.body(gson.toJson(list));
 	}
 }

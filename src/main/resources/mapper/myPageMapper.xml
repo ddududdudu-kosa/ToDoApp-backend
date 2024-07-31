@@ -32,6 +32,15 @@
 	    <result property="followMonthlyAchievementRate" column="FOLLOW_ACHIEVEMENT_RATE" />
 	    <result property="followMonthlyAchievementCount" column="FOLLOW_ACHIEVEMENT_COUNT" />
 	  </resultMap>
+	  
+	  <resultMap id="top5" type="com.todo.mypage.domain.Top5Member">
+	    <result property="email" column="EMAIL" />
+	    <result property="nickname" column="NICKNAME" />
+	    <result property="profileImg" column="PROFILEIMG" />
+	    <result property="rating" column="RATING" />
+	    <result property="totalAchievementCount" column="TOTAL_ACHIEVEMENT_COUNT" />
+	    <result property="memberId" column="MEMBER_ID" />
+	  </resultMap>
   
 	<select id="getMyInfo" resultMap="myInfoResultMap">
 	     SELECT
@@ -77,6 +86,41 @@
 		ON F.FOLLOW_ID = S.MEMBER_ID
 		WHERE F.MEMBER_ID = #{memberId}
 	 </select>
+	 
+	 <select id="getPurposeCount" resultType="int">
+		select
+		 count(*) as today
+		from todos tod
+		left join categories c
+		on tod.categories_id = c.id 
+		where to_char(t_date,'YYYY-MM-dd') = to_char(sysdate,'YYYY-MM-dd')  
+		and member_id = #{memberId}
+	 </select>
+	 
+	<select id="getCompleteCount" resultType="int">
+		select
+		 count(*) as complete
+		from todos tod
+		left join categories c
+		on tod.categories_id = c.id 
+		where to_char(t_date,'YYYY-MM-dd') = to_char(sysdate,'YYYY-MM-dd')  
+		and member_id = #{memberId}
+		and status = 1
+	 </select>
 
+	<select id="getTop5" resultMap="top5">
+		SELECT
+		    M.EMAIL,
+		    M.NICKNAME,
+		    M.PROFILEIMG,
+		    M.RATING,
+		    S.TOTAL_ACHIEVEMENT_COUNT,
+		    S.MEMBER_ID
+		FROM STATS S
+		RIGHT JOIN MEMBER M
+		ON M.ID = S.MEMBER_ID
+		ORDER BY S.TOTAL_ACHIEVEMENT_COUNT DESC NULLS LAST, M.CREATEAT ASC
+		FETCH FIRST 5 ROWS ONLY
+	</select>
 	
 </mapper>
