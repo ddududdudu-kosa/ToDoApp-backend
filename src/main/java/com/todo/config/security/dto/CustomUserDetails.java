@@ -8,7 +8,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.todo.member.model.MemberDTO;
 
+import lombok.ToString;
 
+@ToString
 public class CustomUserDetails implements UserDetails  {
 
     private final MemberDTO memberDTO;
@@ -35,6 +37,10 @@ public class CustomUserDetails implements UserDetails  {
 		return collection;
 	}
 
+	
+  
+
+	
 	// password값을 반환
 	@Override
 	public String getPassword() {

@@ -50,4 +50,26 @@
     <delete id="deleteDiary" parameterType="Long">
         DELETE FROM diaries WHERE id = #{id}
     </delete>
+    
+    
+   <resultMap id="DiaryDTOResultMap" type="com.todo.diaries.domain.dto.DiaryDTO">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="contents" column="contents"/>
+        <result property="dDate" column="d_date"/>
+        <result property="temperature" column="temperature"/>
+        <result property="diaryimg" column="diaryimg"/>
+        <result property="status" column="status"/>
+        <result property="createat" column="createat"/>
+        <result property="updateat" column="updateat"/>
+        <result property="emoji" column="emoji"/>
+        <result property="memberId" column="member_id"/>
+    </resultMap>
+
+    <select id="findByMemberIdAndDate" parameterType="map" resultMap="DiaryDTOResultMap">
+        SELECT *
+        FROM diaries
+        WHERE member_id = #{memberId} AND d_date = #{dDate}
+    </select>
+	
 </mapper>

@@ -1,6 +1,7 @@
 package com.todo.member.service;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +14,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.todo.member.dao.MemberMapper;
 import com.todo.member.model.JoinDTO;
 import com.todo.member.model.MemberDTO;
+import com.todo.member.model.UserProfile;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -65,7 +67,7 @@ public class MemberServiceImpl implements MemberService {
         
         joinDTO.setPassword(bCryptPasswordEncoder.encode(password));
         joinDTO.setRole("ROLE_USER");
-
+        log.info("insert 세팅 : {}", joinDTO);
         memberMapper.insertMember(joinDTO);
 		
 	}
@@ -75,4 +77,10 @@ public class MemberServiceImpl implements MemberService {
 		return memberMapper.findByEmail(email);
 	}
 
+	@Override
+	public List<UserProfile> getRelevantUserProfiles(Long userId) {
+	     return memberMapper.findRelevantUsers(userId);
+	}
+	  
+	  
 }

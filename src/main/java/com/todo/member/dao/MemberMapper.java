@@ -1,9 +1,13 @@
 package com.todo.member.dao;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.todo.member.model.JoinDTO;
 import com.todo.member.model.MemberDTO;
+import com.todo.member.model.UserProfile;
 
 @Mapper
 public interface MemberMapper {
@@ -14,5 +18,6 @@ public interface MemberMapper {
 	// 회원가입
 	void insertMember(JoinDTO joinDTO);
 	
-	
-}
+	// 리스트
+	List<UserProfile> findRelevantUsers(@Param("currentUserId") Long currentUserId);
+	}

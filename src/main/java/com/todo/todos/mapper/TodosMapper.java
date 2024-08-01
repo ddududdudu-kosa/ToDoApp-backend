@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.todo.todos.domain.CheckedTodoDTO;
 import com.todo.todos.domain.Todo;
 
 @Mapper
@@ -21,6 +22,9 @@ public interface TodosMapper {
 		Long findByTodoMaxOrder(Long categoryId);
 		void updateOrderOnDelete(@Param("categoriesId") Long categoriesId, @Param("order") Long order);
 		List<Todo> findTodosByUserIdAndDate(@Param("memberId")Long memberId, @Param("date") Date date);
+
+
+		List<CheckedTodoDTO> findRecentCompletedTodos(@Param("page") int page, @Param("size") int size);
 		
 }
 

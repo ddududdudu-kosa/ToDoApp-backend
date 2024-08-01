@@ -104,4 +104,47 @@
 	    WHERE m.id = #{memberId}
 	    AND TRUNC(t.t_date) = TRUNC(#{date})
 	</select>
+	
+	
+	<!-- 밑에 결과 매핑 설정 --> 
+	<resultMap id="checkedTodoResultMap" type="com.todo.todos.domain.CheckedTodoDTO">
+	    <result property="memberId" column="member_Id"/>
+	    <result property="nickname" column="nickname"/>
+	    <result property="profileImg" column="profileimg"/>
+	    <result property="privacy" column="privacy"/>
+	    <collection property="checkedTodos" ofType="com.todo.todos.domain.TodoDTO">
+	        <result property="order" column="c_order"/>
+	        <result property="contents" column="contents"/>
+	        <result property="date" column="t_date"/>
+	        <result property="color" column="color"/>
+	    </collection>
+	</resultMap>
+
+	 
+	
+	<!-- 완성한 todos가 4개 이상인 사용자의 최신 날짜 데이터를 조회 --> 
+	<select id="findRecentCompletedTodos" parameterType="map" resultMap="checkedTodoResultMap">
+		SELECT m.id AS member_Id, m.nickname, m.profileimg, m.privacy, t.c_order, t.contents, t.t_date, c.color
+		FROM (
+		    SELECT c.member_id, todos.t_order AS c_order, todos.contents, todos.t_date, 
+		           RANK() OVER (PARTITION BY c.member_id ORDER BY todos.t_date DESC) AS rk
+		    FROM todos
+		    JOIN categories c ON todos.categories_id = c.id
+		    WHERE todos.status = '1'
+		    GROUP BY c.member_id, todos.t_date, todos.t_order, todos.contents
+		    HAVING COUNT(*) >= 4
+		) t
+		JOIN member m ON t.member_id = m.id AND m.privacy = 'open'
+		JOIN categories c ON t.member_id = c.member_id
+		WHERE t.rk = 1
+		ORDER BY t.c_order
+		OFFSET (#{page} - 1) * #{size} ROWS 
+		FETCH NEXT #{size} ROWS ONLY
+	</select>
+
+	
+
+
+
+	
 </mapper>
