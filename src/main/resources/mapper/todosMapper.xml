@@ -54,6 +54,7 @@
 		        contents = #{contents},
 		        t_date = #{date},
 		        categories_id = #{categoriesId},
+		        status = #{status},
 		        updateat = SYSDATE
 	    	WHERE id = #{id}
 	</update>
