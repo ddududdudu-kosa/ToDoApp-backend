@@ -6,8 +6,8 @@ import lombok.Data;
 
 @Data
 public class TodoDTO {
-    private Integer Cateorder;
-    private Integer Todoorder;
+    private Integer cateOrder;
+    private Integer todoOrder;
     private String contents;
     private Date date;
     private String color;

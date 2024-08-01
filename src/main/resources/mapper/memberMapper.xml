@@ -60,17 +60,46 @@
 	    <result property="profileImg" column="profileImg" />
 	    <result property="privacy" column="privacy" />
 	    <result property="relationType" column="relation_priority" />
+	    <result property="isActStory" column="is_act_story" />
+	    <result property="isVisited" column="is_visited" />
 	</resultMap>
   
 	
 	<!-- 스토리 조회 순서 relation_priority 1:나 2:팔로워 3:공개 /공개는 무한 스크롤 구현? 아니면 추천 알고리즘있어야 쓸모있을듯 -->
 	<select id="findRelevantUsers" resultMap="relevantInfoResultMap">
 		SELECT m.id, m.nickname, m.profileimg, m.privacy,
-		       CASE
-		           WHEN m.id = #{currentUserId} THEN 1   
-		           WHEN f.follow_id IS NOT NULL THEN 2   
-		           <!-- ELSE 3  -->  
-		       END AS relation_priority
+	       CASE
+	           WHEN m.id = #{currentUserId} THEN 1   
+	           WHEN f.follow_id IS NOT NULL THEN 2   
+	           <!-- ELSE 3  -->  
+	       END AS relation_priority,
+	       CASE
+	            WHEN EXISTS (
+	                SELECT 1 FROM stories 
+	                WHERE member_id = m.id
+	                AND createAt > SYSDATE - INTERVAL '24' HOUR
+	            ) THEN 'true'
+	            ELSE 'false'
+	        END AS is_act_story,
+	        CASE
+	         	WHEN (
+			        SELECT COUNT(*) FROM stories s
+			        WHERE s.member_id = m.id
+			        AND s.createat > SYSDATE - INTERVAL '24' HOUR
+			    ) = 0 THEN 'false'     
+	            WHEN (
+	                SELECT COUNT(*) FROM stories s
+	                WHERE s.member_id = m.id
+	                AND s.createat > SYSDATE - INTERVAL '24' HOUR
+	            ) = (
+	                SELECT COUNT(*) FROM story_visitors sv
+	                JOIN stories s ON sv.stories_id = s.id
+	                WHERE s.member_id = m.id
+	                AND sv.member_id = #{currentUserId}
+	                AND s.createat > SYSDATE - INTERVAL '24' HOUR
+	            ) THEN 'true'
+	            ELSE 'false'
+	       	END AS is_visited 
 		FROM member m
 		LEFT JOIN follows f ON m.id = f.follow_id AND f.member_id = #{currentUserId}
 		WHERE <!--  m.privacy = 'open' OR -->m.id = #{currentUserId} OR f.follow_id IS NOT NULL
