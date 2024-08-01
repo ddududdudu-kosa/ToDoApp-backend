@@ -77,4 +77,5 @@
 		ORDER BY relation_priority ASC, m.nickname ASC 
 	</select>
 	
+	
 </mapper>

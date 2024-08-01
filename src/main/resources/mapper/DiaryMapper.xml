@@ -52,30 +52,24 @@
     </delete>
     
     
-   <resultMap id="DiaryDetailResultMap" type="com.todo.diaries.domain.dto.DiaryDetail">
-   		<result property="id" column="Id"/>
-	    <result property="memberId" column="member_Id"/>
-	    <result property="nickname" column="nickname"/>
-	    <result property="profileImg" column="profileImg"/>
-	    <result property="privacy" column="privacy"/>
-	    <result property="title" column="title"/> 
-	    <result property="diaryDate" column="d_date"/>
-	    <result property="emoji" column="emoji"/>
-	    <result property="temperature" column="temperature"/>
-	</resultMap>
-	
-	<select id="findAllRecentDiaries" resultMap="DiaryDetailResultMap">
-	    SELECT d.id, m.id AS member_Id, m.nickname, m.profileImg, m.privacy, d.title, d.d_date, d.emoji, d.temperature
-	    FROM diaries d
-	    JOIN member m ON d.member_id = m.id
-	    WHERE d.d_date = (
-	        SELECT MAX(d2.d_date)
-	        FROM diaries d2
-	        WHERE d2.member_id = d.member_id
-	    )
-	    ORDER BY d.createat DESC
-    	OFFSET #{offset} ROWS FETCH NEXT #{size} ROWS ONLY
-	</select>	
-	
+   <resultMap id="DiaryDTOResultMap" type="com.todo.diaries.domain.dto.DiaryDTO">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="contents" column="contents"/>
+        <result property="dDate" column="d_date"/>
+        <result property="temperature" column="temperature"/>
+        <result property="diaryimg" column="diaryimg"/>
+        <result property="status" column="status"/>
+        <result property="createat" column="createat"/>
+        <result property="updateat" column="updateat"/>
+        <result property="emoji" column="emoji"/>
+        <result property="memberId" column="member_id"/>
+    </resultMap>
+
+    <select id="findByMemberIdAndDate" parameterType="map" resultMap="DiaryDTOResultMap">
+        SELECT *
+        FROM diaries
+        WHERE member_id = #{memberId} AND d_date = #{dDate}
+    </select>
 	
 </mapper>

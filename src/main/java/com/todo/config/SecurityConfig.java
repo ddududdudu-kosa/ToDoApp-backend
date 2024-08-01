@@ -76,10 +76,14 @@ public class SecurityConfig {
 		http.httpBasic((auth) -> auth.disable());
 
 		// 경로별 인가 작업
-		http.authorizeHttpRequests((auth) -> auth
-				.requestMatchers("/login", "/", "/join", "/api/mail/**").permitAll() //
-				.requestMatchers("/admin/**").hasRole("ADMIN") // /admin 경로에는 ADMIN권한만 가진 계정만 허용
-				.anyRequest().authenticated()); // 그 외의 모든 경로에는 로그인한 사용자만 허용
+		http
+			.authorizeHttpRequests((auth) -> auth
+					.requestMatchers("/login", "/", "/join","/api/mail/**").permitAll()	// /login, /, /join 경로는 모두에게 허용
+					.requestMatchers("/diary/register").authenticated() 	// 추가
+					.requestMatchers("/member/profile").authenticated() // /member/profile 경로는 인증된 사용자만 허용
+					.requestMatchers("/admin/**").hasRole("ADMIN")			// /admin 경로에는 ADMIN권한만 가진 계정만 허용
+					.anyRequest().authenticated());						// 그 외의 모든 경로에는 로그인한 사용자만 허용
+
 //					.anyRequest().permitAll());
 		// JWTFilter 등록 (로그인 필터 앞에다 등록)
 		http.addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);

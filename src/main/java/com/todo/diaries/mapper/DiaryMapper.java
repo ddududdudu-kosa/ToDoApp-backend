@@ -1,5 +1,6 @@
 package com.todo.diaries.mapper;
 
+import java.sql.Date;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -21,4 +22,7 @@ public interface DiaryMapper {
     void deleteDiary(Long id);
 
     List<DiaryDetail> findAllRecentDiaries(@Param("offset") int offset, @Param("size") int size);
+    
+    DiaryDTO findByMemberIdAndDate(Long memberId, Date dDate);
+    
    }

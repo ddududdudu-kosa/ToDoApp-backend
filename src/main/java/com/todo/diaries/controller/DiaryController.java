@@ -2,13 +2,18 @@ package com.todo.diaries.controller;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,10 +26,14 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.todo.config.security.dto.CustomUserDetails;
 import com.todo.diaries.domain.dto.DiaryDTO;
 import com.todo.diaries.domain.dto.DiaryDetail;
+import com.todo.diaries.domain.entity.Diary;
 import com.todo.diaries.service.DiaryService;
 import com.todo.diaries.service.S3Service;
+import com.todo.member.model.MemberDTO;
+import com.todo.member.service.MemberService;
 
 @RestController
 @RequestMapping("/diary")
@@ -37,6 +46,13 @@ public class DiaryController {
     private S3Service s3Service;
     
     private static final Logger logger = Logger.getLogger(DiaryController.class.getName());
+    
+    @Autowired
+    private MemberService memberService;
+    
+    private MemberDTO getMember(String userEmail) {
+        return memberService.findByEmail(userEmail);
+     }
 
     @GetMapping
     public List<DiaryDTO> getAllDiaries() {
@@ -47,36 +63,16 @@ public class DiaryController {
     public DiaryDTO getDiaryById(@PathVariable Long id) {
         return diaryService.getDiaryById(id);
     }
-/*
-    @PostMapping
-    public void createDiary(@RequestBody DiaryDTO diaryDTO) {
-    	System.out.println("Diary to be saved: " + diaryDTO);
-        // Insert logic here
-        diaryService.createDiary(diaryDTO);
-        System.out.println("Diary to be saved 2: " + diaryDTO);
-        // Insert logic here
-    }
-    
-    @PostMapping
-    public ResponseEntity<String> createDiary(@RequestBody DiaryDTO diaryDTO) {
-    	String imageUrl = s3Service.uploadFile(file);
-        diaryDTO.setDiaryimg(imageUrl);
-        // dDate를 LocalDate로 변환 후 다시 Date로 변환
-        LocalDate localDate = LocalDate.parse(diaryDTO.getDDate().toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        Date sqlDate = Date.valueOf(localDate);
-        diaryDTO.setDDate(sqlDate);
-        // 현재 시간 설정
-        Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
-        diaryDTO.setCreateat(currentTimestamp);
-        diaryDTO.setStatus("A");        
-
-        diaryService.createDiary(diaryDTO);
-        return ResponseEntity.ok("Diary created successfully");
-    }*/
     
     @PostMapping("/register")
-    public ResponseEntity<String> createDiary(@RequestParam(value = "file", required = false) MultipartFile file, @RequestPart("diaryDTO") DiaryDTO diaryDTO) {
+    public ResponseEntity<String> createDiary(@RequestParam(value = "file", required = false) MultipartFile file, @RequestPart("diaryDTO") DiaryDTO diaryDTO, Authentication authentication) {
         try {
+            // 인증된 사용자 정보 가져오기
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            Long authenticatedMemberId = getMember(userDetails.getUsername()).getId();  // 인증된 사용자의 ID를 조회
+
+            // diaryDTO에 memberId 설정
+            diaryDTO.setMemberId(authenticatedMemberId);
             // 파일이 있는 경우에만 업로드 처리
             if (file != null && !file.isEmpty()) {
                 String imageUrl = s3Service.uploadFile(file);
@@ -105,7 +101,7 @@ public class DiaryController {
         }
     }
 
-
+   
     @PutMapping("/{id}")
     public void updateDiary(@PathVariable Long id, @RequestBody DiaryDTO diaryDTO) {
         diaryDTO.setId(id);
@@ -129,5 +125,29 @@ public class DiaryController {
         return ResponseEntity.ok(diaries);
     }
     
-    
+    public ResponseEntity<Map<String, Object>> checkDiary(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        String selectedDateStr = request.get("selectedDate");
+
+        // 날짜 형식을 java.sql.Date 객체로 변환
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        java.sql.Date selectedDate;
+        try {
+            selectedDate = new java.sql.Date(dateFormat.parse(selectedDateStr).getTime());
+        } catch (ParseException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Invalid date format"));
+        }
+
+        MemberDTO member = memberService.findByEmail(email);
+        if (member == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Invalid user"));
+        }
+
+        DiaryDTO diary = diaryService.findByMemberIdAndDate(member.getId(), selectedDate);
+        if (diary != null) {
+            return ResponseEntity.ok(Map.of("diaryExists", true, "diaryId", diary.getId()));
+        } else {
+            return ResponseEntity.ok(Map.of("diaryExists", false));
+        }
+    }
 }

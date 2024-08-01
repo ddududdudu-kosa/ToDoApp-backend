@@ -2,6 +2,7 @@ package com.todo.config.security.jwt;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.logging.Logger;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -16,9 +17,15 @@ public class JWTUtil {
 
 	private SecretKey secretKey;
 
+	private static final Logger logger = Logger.getLogger(JWTUtil.class.getName());
+	
     public JWTUtil(@Value("${spring.jwt.secret}")String secret) {
-        secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
+       secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
+    	 // 변경된 부분: 키 생성 로직 정리
+        //byte[] keyBytes = secret.getBytes(StandardCharsets.UTF_8);
+        //this.secretKey = new SecretKeySpec(keyBytes, 0, keyBytes.length, "HmacSHA256");
     }
+    
 
     // 검증을 진행할 메소드 getUsername, getRole, isExpired
     public String getUsername(String token) {

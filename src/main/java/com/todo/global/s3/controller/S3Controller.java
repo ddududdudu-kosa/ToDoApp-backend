@@ -30,7 +30,6 @@ public class S3Controller {
         try {
             String fileUri = s3FileUploadService.uploadFile(file, folder);
             model.addAttribute("imageUri", fileUri);
-
             if(existingImageUri != null && !existingImageUri.equals("")) {
                 s3FileUploadService.deleteFile(existingImageUri, folder);
             }

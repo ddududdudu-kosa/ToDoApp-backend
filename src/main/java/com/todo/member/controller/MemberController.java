@@ -13,11 +13,8 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import com.todo.config.security.dto.CustomUserDetails;
-
 import com.todo.member.model.JoinDTO;
 import com.todo.member.model.MemberDTO;
 import com.todo.member.model.UserProfile;
@@ -60,4 +57,18 @@ public class MemberController {
     private MemberDTO getMember(String userEmail) {
     	return memberService.findByEmail(userEmail);
     }
+    
+ // 사용자 프로필 정보 가져오기
+    @GetMapping("/member/profile")
+    public ResponseEntity<MemberDTO> getProfile(Authentication authentication) {
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        String userEmail = userDetails.getUsername();
+        MemberDTO memberDTO = getMember(userEmail);
+
+        if (memberDTO == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        return ResponseEntity.ok(memberDTO);
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.todo.diaries.service;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -52,6 +53,10 @@ public class DiaryService {
     public List<DiaryDetail> getAllRecentDiaries(int page, int size) {
         int offset = (page - 1) * size;
         return diaryMapper.findAllRecentDiaries(offset, size);
+    }
+    
+    public DiaryDTO findByMemberIdAndDate(Long memberId, Date dDate) {
+        return diaryMapper.findByMemberIdAndDate(memberId, dDate);
     }
 
 }
