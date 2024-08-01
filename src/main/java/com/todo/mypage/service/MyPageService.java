@@ -19,6 +19,7 @@ import com.todo.mypage.domain.FollowStats;
 import com.todo.mypage.domain.FollowingMemberInfo;
 import com.todo.mypage.domain.MemberInfo;
 import com.todo.mypage.domain.MyStats;
+import com.todo.mypage.domain.Top5Member;
 import com.todo.mypage.mapper.MyPageMapper;
 
 import lombok.extern.slf4j.Slf4j;
@@ -36,11 +37,11 @@ public class MyPageService {
 	public static List<String> saying = new ArrayList<>();
 	
 	static {
-		saying.add("명언1");
-		saying.add("명언2");
-		saying.add("명언3");
-		saying.add("명언4");
-		saying.add("명언5");
+		saying.add("자신이 되고 싶은 대로 될 수 있다. 다만 그 길을 가야 한다. - 스티브잡스 (Steve Jobs)");
+		saying.add("성공은 우연히 이루어지지 않는다. 그것은 열정, 노력, 그리고 끊임없는 학습의 결과물이다. - 콜린 파월 (Colin Powell)");
+		saying.add("당신이 될 수 있는 것보다 더 나은 것이 무엇인지 알 수 없다. - 알버트 아인슈타인 (Albert Einstein)");
+		saying.add("어제의 나와 오늘의 내가 다르다면, 그것은 성장의 증거이다. - 존 C. 맥스웰 (John C. Maxwell)");
+		saying.add("시작이 반이다. 그러니 오늘이 바로 당신의 새로운 시작일 수 있다. - 앨버트 슈바이처 (Albert Schweitzer)");
 	}
 	
 	// 나의 정보 및 친구 정보
@@ -92,5 +93,22 @@ public class MyPageService {
 		Random random = new Random();
         int randomNumber = random.nextInt(saying.size()); // 0부터 n-1까지의 랜덤 숫자 생성
 		return saying.get(randomNumber);
+	}
+	
+	public Map<String, Object> getTodayComplete(Authentication authentication) {
+		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+		String email = userDetails.getUsername();
+		MemberDTO member = memberMapper.findByEmail(email);
+		
+		int today = myPageMapper.getPurposeCount(member.getId());
+		int complete = myPageMapper.getCompleteCount(member.getId());
+		Map<String, Object> result = new HashMap<>();
+		result.put("today", today);
+		result.put("complete", complete);
+		return result;
+	}
+	
+	public List<Top5Member> getTop5(){
+		return myPageMapper.getTop5();
 	}
 }
