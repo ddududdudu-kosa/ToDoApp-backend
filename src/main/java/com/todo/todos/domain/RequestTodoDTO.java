@@ -11,4 +11,5 @@ public class RequestTodoDTO {
 	private Date date;
 	private Long categoriesId;
 	private Date updateAt;
+	private String status;
 ;}

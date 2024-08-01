@@ -65,6 +65,7 @@ public class TodosController {
         		.contents(requestTodoDTO.getContents())
         		.date(requestTodoDTO.getDate())
         		.categoriesId(requestTodoDTO.getCategoriesId())
+        		.status(requestTodoDTO.getStatus())
         		.build();
         Todo updateTodo = todoService.updateTodo(todo);
         ResponseTodoDTO responseTodoDTO = ResponseTodoDTO.builder()
@@ -72,6 +73,7 @@ public class TodosController {
         		.date(updateTodo.getDate())
         		.categoriesId(updateTodo.getCategoriesId())
         		.updateat(updateTodo.getUpdateAt())
+        		.status(updateTodo.getStatus())
         		.build();
         return ResponseEntity.ok(responseTodoDTO);        
     }
