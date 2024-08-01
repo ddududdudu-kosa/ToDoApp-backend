@@ -76,7 +76,7 @@
     WHERE stories_id = #{storiesId}
 </select>
 
-
+ 
 <select id="findAllStoriesByMemberId" resultMap="storyResultMap">
     SELECT id, title, storyImg, member_id, CREATEAT, TOTAL_LIKES
     FROM stories
