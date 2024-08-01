@@ -105,7 +105,7 @@
 		on tod.categories_id = c.id 
 		where to_char(t_date,'YYYY-MM-dd') = to_char(sysdate,'YYYY-MM-dd')  
 		and member_id = #{memberId}
-		and status = 2
+		and status = 1
 	 </select>
 
 	<select id="getTop5" resultMap="top5">
