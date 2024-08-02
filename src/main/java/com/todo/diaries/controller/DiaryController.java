@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -60,7 +61,7 @@ public class DiaryController {
     }
 
     @GetMapping("/{id}")
-    public DiaryDTO getDiaryById(@PathVariable Long id) {
+    public DiaryDTO getDiaryById(@PathVariable("id") Long id) {
         return diaryService.getDiaryById(id);
     }
     
@@ -100,6 +101,38 @@ public class DiaryController {
             return ResponseEntity.status(500).body("Diary creation failed: " + e.getMessage());
         }
     }
+    
+    @PostMapping("/createAndReturn")
+    public ResponseEntity<?> createDiaryAndReturnId(@RequestParam(value = "file", required = false) MultipartFile file, @RequestPart("diaryDTO") DiaryDTO diaryDTO, Authentication authentication) {
+        try {
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            Long authenticatedMemberId = getMember(userDetails.getUsername()).getId();
+            diaryDTO.setMemberId(authenticatedMemberId);
+
+            if (file != null && !file.isEmpty()) {
+                String imageUrl = s3Service.uploadFile(file);
+                diaryDTO.setDiaryimg(imageUrl);
+            }
+
+            LocalDate localDate = LocalDate.parse(diaryDTO.getDDate().toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            Date sqlDate = Date.valueOf(localDate);
+            diaryDTO.setDDate(sqlDate);
+            diaryDTO.setCreateat(new Timestamp(System.currentTimeMillis()));
+            diaryDTO.setStatus("A");
+
+            Diary createdDiary = diaryService.createDiary(diaryDTO);
+            if (createdDiary != null) {
+                Map<String, Long> responseBody = Collections.singletonMap("id", createdDiary.getId());
+                return ResponseEntity.ok(responseBody);
+            } else {
+                throw new Exception("Diary creation failed, no ID retrieved.");
+            }
+        } catch (Exception e) {
+            logger.severe("Diary creation failed: " + e.getMessage());
+            return ResponseEntity.status(500).body("Diary creation failed: " + e.getMessage());
+        }
+    }
+
 
    
     @PutMapping("/{id}")
