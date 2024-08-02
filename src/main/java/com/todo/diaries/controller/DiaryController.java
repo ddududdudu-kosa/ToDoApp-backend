@@ -29,7 +29,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.todo.config.security.dto.CustomUserDetails;
 import com.todo.diaries.domain.dto.DiaryDTO;
 import com.todo.diaries.domain.dto.DiaryDetail;
-import com.todo.diaries.domain.entity.Diary;
 import com.todo.diaries.service.DiaryService;
 import com.todo.diaries.service.S3Service;
 import com.todo.member.model.MemberDTO;
@@ -60,7 +59,7 @@ public class DiaryController {
     }
 
     @GetMapping("/{id}")
-    public DiaryDTO getDiaryById(@PathVariable Long id) {
+    public DiaryDTO getDiaryById(@PathVariable("id") Long id) {
         return diaryService.getDiaryById(id);
     }
     
