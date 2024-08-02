@@ -3,6 +3,11 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.todo.story.dao.StoriesMapper">
 
+<!--
+작성자 : 전민재
+ 기능 : story 
+ -->
+
  
 	<!-- 스토리 생성 -->
     <insert id="insertStory">

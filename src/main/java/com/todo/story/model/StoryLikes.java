@@ -4,6 +4,11 @@ import java.sql.Date;
 
 import lombok.Data;
 
+/*
+ * 작성자 : 전민재
+ * 기능 : story
+ * */
+
 @Data
 public class StoryLikes {
 

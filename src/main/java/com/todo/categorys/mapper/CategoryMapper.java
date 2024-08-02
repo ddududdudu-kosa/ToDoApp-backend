@@ -8,6 +8,11 @@ import org.apache.ibatis.annotations.Param;
 import com.todo.categorys.domain.Category;
 import com.todo.categorys.domain.ResponseCategoryDTO;
 
+/*
+ * 작성자 : 김종현
+ * 기능 : category
+ * */
+
 @Mapper
 public interface CategoryMapper {
 	Long insertCategory(Category category);

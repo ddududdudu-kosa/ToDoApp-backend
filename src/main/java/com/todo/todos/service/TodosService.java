@@ -6,6 +6,11 @@ import java.util.List;
 import com.todo.todos.domain.CheckedTodoDTO;
 import com.todo.todos.domain.Todo;
 
+/*
+ * 작성자 : 김종현
+ * 기능 : todo
+ * */
+
 public interface TodosService {
 	List<Todo> getTodosByMemberId(Long memberId);
     Long addTodo(Todo todo);

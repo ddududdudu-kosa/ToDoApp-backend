@@ -4,6 +4,11 @@ import java.util.List;
 
 import lombok.Data;
 
+/*
+ * 작성자 : 김종현
+ * 기능 : todo
+ * */
+
 @Data
 public class CheckedTodoDTO {
     private Long memberId;

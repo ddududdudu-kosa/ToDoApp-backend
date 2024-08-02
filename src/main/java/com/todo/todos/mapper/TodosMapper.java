@@ -10,6 +10,11 @@ import org.apache.ibatis.annotations.Param;
 import com.todo.todos.domain.CheckedTodoDTO;
 import com.todo.todos.domain.Todo;
 
+/*
+ * 작성자 : 김종현
+ * 기능 : todo
+ * */
+
 @Mapper
 public interface TodosMapper {
 	    List<Todo> findTodosByMemberId(Long memberId);

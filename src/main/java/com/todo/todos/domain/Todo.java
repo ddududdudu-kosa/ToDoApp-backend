@@ -10,6 +10,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/*
+ * 작성자 : 김종현
+ * 기능 : todo
+ * */
+
 @Getter
 @Builder
 @ToString
