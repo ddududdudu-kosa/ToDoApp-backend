@@ -5,6 +5,11 @@ import java.util.Date;
 
 import lombok.Data;
 
+/*
+ * 작성자 : 김종현
+ * 기능 : todo
+ * */
+
 @Data
 public class RequestTodoDTO {
 	private String contents;

@@ -8,6 +8,11 @@ import com.todo.categorys.domain.Category;
 import com.todo.categorys.mapper.CategoryMapper;
 import lombok.AllArgsConstructor;
 
+/*
+ * 작성자 : 김종현
+ * 기능 : category
+ * */
+
 @Service
 @AllArgsConstructor
 public class CategoryServiceImpl implements CategoryService {

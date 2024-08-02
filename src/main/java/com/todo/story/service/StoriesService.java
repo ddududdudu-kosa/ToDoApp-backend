@@ -14,6 +14,11 @@ import com.todo.story.model.StoryVisitors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/*
+ * 작성자 : 전민재
+ * 기능 : story
+ * */
+
 @Service
 @Slf4j
 @RequiredArgsConstructor

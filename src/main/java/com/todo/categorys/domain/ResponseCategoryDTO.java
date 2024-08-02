@@ -7,6 +7,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+/*
+ * 작성자 : 김종현
+ * 기능 : category
+ * */
+
 @Getter
 @Setter
 @Builder

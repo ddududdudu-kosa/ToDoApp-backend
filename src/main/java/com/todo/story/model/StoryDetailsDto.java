@@ -6,6 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/*
+ * 작성자 : 전민재
+ * 기능 : story
+ * */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

@@ -4,6 +4,11 @@ import java.util.List;
 
 import com.todo.categorys.domain.Category;
 
+/*
+ * 작성자 : 김종현
+ * 기능 : category
+ * */
+
 public interface CategoryService {
 	Long insertCategory(Category category);
     void deleteCategory(Long categoryId);

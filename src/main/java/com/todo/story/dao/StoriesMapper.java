@@ -9,6 +9,11 @@ import com.todo.story.model.Stories;
 import com.todo.story.model.StoryLikes;
 import com.todo.story.model.StoryVisitors;
 
+/*
+ * 작성자 : 전민재
+ * 기능 : story
+ * */
+
 @Mapper
 public interface StoriesMapper {
     void insertStory(Stories stories);

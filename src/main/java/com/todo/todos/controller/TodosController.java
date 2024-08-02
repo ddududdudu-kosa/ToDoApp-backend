@@ -27,6 +27,11 @@ import com.todo.todos.service.TodosService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
+/*
+ * 작성자 : 김종현
+ * 기능 : todo
+ * */
+
 @RestController
 @RequestMapping("/api/todos")
 @AllArgsConstructor

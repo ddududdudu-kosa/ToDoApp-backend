@@ -26,6 +26,11 @@ import com.todo.story.service.StoriesService;
 
 import lombok.extern.slf4j.Slf4j;
 
+/*
+ * 작성자 : 전민재
+ * 기능 : story
+ * */
+
 @Slf4j
 @RestController
 @RequestMapping("/stories")

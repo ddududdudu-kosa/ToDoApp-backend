@@ -32,6 +32,10 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+/*
+ * 작성자 : 김종현
+ * 기능 : category
+ * */
 
 @RestController
 @RequestMapping("/api/categories")
