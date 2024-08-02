@@ -44,7 +44,7 @@ public class CategoryController {
 	
 	// 카테고리 내용 생성 로직
 	@PostMapping
-	public ResponseEntity<ResponseCategoryDTO> insertCategory(@RequestBody RequestCategoryDTO req, @AuthenticationPrincipal Authentication authentication){
+	public ResponseEntity<ResponseCategoryDTO> insertCategory(@RequestBody RequestCategoryDTO req, Authentication authentication){
 	    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Long memberId = getMember(userDetails.getUsername()).getId();
 		Long maxOrder = categoryService.findMaxOrder(req.getMemberId()) + 1;

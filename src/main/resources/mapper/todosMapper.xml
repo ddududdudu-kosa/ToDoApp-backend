@@ -54,6 +54,7 @@
 		        contents = #{contents},
 		        t_date = #{date},
 		        categories_id = #{categoriesId},
+		        status = #{status},
 		        updateat = SYSDATE
 	    	WHERE id = #{id}
 	</update>
@@ -113,19 +114,17 @@
 	    <result property="profileImg" column="profileimg"/>
 	    <result property="privacy" column="privacy"/>
 	    <collection property="checkedTodos" ofType="com.todo.todos.domain.TodoDTO">
-	        <result property="Cateorder" column="c_order"/>
-	        <result property="Todoorder" column="t_order"/>
+	        <result property="cateOrder" column="c_order"/>
+	        <result property="todoOrder" column="t_order"/>
 	        <result property="contents" column="contents"/>
 	        <result property="date" column="t_date"/>
 	        <result property="color" column="color"/>
 	    </collection>
-	</resultMap>
-
+	</resultMap> 
 	 
 	
 	<!-- 완성한 todos가 4개 이상인 사용자의 최신 날짜 데이터를 조회 --> 
 	<select id="findRecentCompletedTodos" parameterType="map" resultMap="checkedTodoResultMap">
-
 		SELECT 
 		    m.id AS member_Id, 
 		    m.nickname, 
@@ -155,14 +154,21 @@
 		JOIN member m ON todos.member_id = m.id AND m.privacy = 'open'
 		JOIN categories c ON todos.categories_id = c.id
 		WHERE todos.rk = 1
+		AND todos.member_id IN (
+		    SELECT 
+		        c.member_id
+		    FROM 
+		        categories c
+		    JOIN todos ON c.id = todos.categories_id
+		    WHERE 
+		        todos.status = '1'
+		    GROUP BY 
+		        c.member_id
+		    HAVING 
+		        COUNT(todos.id) >= 4
+		)
 		ORDER BY todos.t_date DESC, todos.c_order ASC, todos.t_order ASC
 		OFFSET (#{page} - 1) * #{size} ROWS 
 		FETCH NEXT #{size} ROWS ONLY
-	</select>
-
-	
-
-
-
-	
+	</select>	
 </mapper>

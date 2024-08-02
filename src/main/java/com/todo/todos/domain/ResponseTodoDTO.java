@@ -16,6 +16,7 @@ public class ResponseTodoDTO {
 	private String contents;
 	private Long order;
 	private Date date;
+	private String status;
 	private Date updateat;
 	private Long categoriesId;
 }
