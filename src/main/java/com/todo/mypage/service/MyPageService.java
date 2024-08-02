@@ -23,7 +23,16 @@ import com.todo.mypage.domain.Top5Member;
 import com.todo.mypage.mapper.MyPageMapper;
 
 import lombok.extern.slf4j.Slf4j;
-
+/**
+* @packageName    : com.todo.mypage.sevice
+* @fileName        : MyPageService.java
+* @author        : leejongseop
+* @description            :
+* ===========================================================
+           AUTHOR             NOTE
+* -----------------------------------------------------------
+        leejongseop       최초 생성
+*/
 @Slf4j
 @Service
 public class MyPageService {

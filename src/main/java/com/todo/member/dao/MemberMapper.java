@@ -8,7 +8,16 @@ import org.apache.ibatis.annotations.Param;
 import com.todo.member.model.JoinDTO;
 import com.todo.member.model.MemberDTO;
 import com.todo.member.model.UserProfile;
-
+/**
+* @packageName    : com.todo.member.dao
+* @fileName        : MemberMapper.java
+* @author        : leejongseop
+* @description            :
+* ===========================================================
+           AUTHOR             NOTE
+* -----------------------------------------------------------
+        leejongseop       최초 생성
+*/
 @Mapper
 public interface MemberMapper {
 

@@ -18,7 +18,16 @@ import com.todo.member.model.UserProfile;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
+/**
+* @packageName    : com.todo.member.service
+* @fileName        : MemberServiceImpl.java
+* @author        : leejongseop
+* @description            :
+* ===========================================================
+           AUTHOR             NOTE
+* -----------------------------------------------------------
+        leejongseop       최초 생성
+*/
 @Slf4j
 @Service
 @RequiredArgsConstructor

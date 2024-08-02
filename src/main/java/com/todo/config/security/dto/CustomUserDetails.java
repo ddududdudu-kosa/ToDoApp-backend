@@ -9,7 +9,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.todo.member.model.MemberDTO;
 
 import lombok.ToString;
-
+/**
+* @packageName    : com.todo.config.security.dto
+* @fileName        : CustomUserDetails.java
+* @author        : leejongseop
+* @description            :
+* ===========================================================
+           AUTHOR             NOTE
+* -----------------------------------------------------------
+        leejongseop       최초 생성
+*/
 @ToString
 public class CustomUserDetails implements UserDetails  {
 

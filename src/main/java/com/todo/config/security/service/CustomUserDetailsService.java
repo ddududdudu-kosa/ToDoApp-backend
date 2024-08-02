@@ -10,7 +10,16 @@ import com.todo.config.security.dto.CustomUserDetails;
 import com.todo.member.dao.MemberMapper;
 import com.todo.member.model.MemberDTO;
 
-
+/**
+* @packageName    : com.todo.config.security.service
+* @fileName        : CustomUserDetailsService.java
+* @author        : leejongseop
+* @description            :
+* ===========================================================
+           AUTHOR             NOTE
+* -----------------------------------------------------------
+        leejongseop       최초 생성
+*/
 @Service
 public class CustomUserDetailsService implements UserDetailsService{
 

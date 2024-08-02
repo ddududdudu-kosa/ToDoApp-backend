@@ -10,7 +10,16 @@ import com.todo.mypage.domain.FollowingMemberInfo;
 import com.todo.mypage.domain.MemberInfo;
 import com.todo.mypage.domain.MyStats;
 import com.todo.mypage.domain.Top5Member;
-
+/**
+* @packageName    : com.todo.mypage.mapper
+* @fileName        : MyPageMapper.java
+* @author        : leejongseop
+* @description            :
+* ===========================================================
+           AUTHOR             NOTE
+* -----------------------------------------------------------
+        leejongseop       최초 생성
+*/
 @Mapper
 public interface MyPageMapper {
 

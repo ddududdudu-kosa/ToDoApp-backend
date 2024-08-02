@@ -58,5 +58,7 @@ public class DiaryService {
     public DiaryDTO findByMemberIdAndDate(Long memberId, Date dDate) {
         return diaryMapper.findByMemberIdAndDate(memberId, dDate);
     }
+    
+
 
 }
