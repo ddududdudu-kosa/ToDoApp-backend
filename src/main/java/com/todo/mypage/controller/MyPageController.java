@@ -15,7 +15,16 @@ import com.todo.mypage.domain.Top5Member;
 import com.todo.mypage.service.MyPageService;
 
 import lombok.extern.slf4j.Slf4j;
-
+/**
+* @packageName    : com.todo.mypage.controller
+* @fileName        : MyPageController.java
+* @author        : leejongseop
+* @description            :
+* ===========================================================
+           AUTHOR             NOTE
+* -----------------------------------------------------------
+        leejongseop       최초 생성
+*/
 @Slf4j
 @RestController
 public class MyPageController {

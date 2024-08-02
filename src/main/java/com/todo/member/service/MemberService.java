@@ -8,7 +8,16 @@ import org.springframework.web.multipart.MultipartFile;
 import com.todo.member.model.JoinDTO;
 import com.todo.member.model.MemberDTO;
 import com.todo.member.model.UserProfile;
-
+/**
+* @packageName    : com.todo.member.service
+* @fileName        : MemberService.java
+* @author        : leejongseop
+* @description            :
+* ===========================================================
+           AUTHOR             NOTE
+* -----------------------------------------------------------
+        leejongseop       최초 생성
+*/
 public interface MemberService {
 
 	// 회원가입

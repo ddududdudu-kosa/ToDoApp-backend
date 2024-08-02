@@ -19,7 +19,16 @@ import com.todo.member.model.JoinDTO;
 import com.todo.member.model.MemberDTO;
 import com.todo.member.model.UserProfile;
 import com.todo.member.service.MemberService;
-
+/**
+* @packageName    : com.todo.member.controller
+* @fileName        : MemberController.java
+* @author        : leejongseop
+* @description            :
+* ===========================================================
+           AUTHOR             NOTE
+* -----------------------------------------------------------
+        leejongseop       최초 생성
+*/
 @RestController
 public class MemberController {
 

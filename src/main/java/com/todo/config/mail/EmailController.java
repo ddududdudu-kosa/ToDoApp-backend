@@ -13,7 +13,16 @@ import com.todo.member.model.MemberDTO;
 import com.todo.member.service.MemberService;
 
 import lombok.extern.slf4j.Slf4j;
-
+/**
+* @packageName    : com.todo.config.mail
+* @fileName        : EmailController.java
+* @author        : leejongseop
+* @description            :
+* ===========================================================
+           AUTHOR             NOTE
+* -----------------------------------------------------------
+        leejongseop       최초 생성
+*/
 @Slf4j
 @RestController
 public class EmailController {

@@ -10,6 +10,16 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+* @packageName    : com.todo.config
+* @fileName        : MailConfig.java
+* @author        : leejongseop
+* @description            :
+* ===========================================================
+           AUTHOR             NOTE
+* -----------------------------------------------------------
+        leejongseop       최초 생성
+*/
 @Configuration
 @RequiredArgsConstructor
 public class MailConfig {

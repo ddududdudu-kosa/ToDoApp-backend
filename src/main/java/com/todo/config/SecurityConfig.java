@@ -22,6 +22,17 @@ import com.todo.config.security.jwt.LoginFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
+/**
+* @packageName    : com.todo.config
+* @fileName        : SecurityConfig.java
+* @author        : leejongseop
+* @description            :
+* ===========================================================
+           AUTHOR             NOTE
+* -----------------------------------------------------------
+        leejongseop       최초 생성
+*/
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor

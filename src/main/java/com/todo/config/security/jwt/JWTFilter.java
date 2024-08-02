@@ -16,7 +16,16 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
+/**
+* @packageName    : com.todo.config.security.jwt
+* @fileName        : JWTFilter.java
+* @author        : leejongseop
+* @description            :
+* ===========================================================
+           AUTHOR             NOTE
+* -----------------------------------------------------------
+        leejongseop       최초 생성
+*/
 public class JWTFilter extends OncePerRequestFilter {
 
 	private final JWTUtil jwtUtil;
